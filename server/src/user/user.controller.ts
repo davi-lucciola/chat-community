@@ -1,10 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import {
-  userSchema,
-  createUserSchema,
-  type UserDTO,
-  type CreateUserDTO,
-} from './user.schema';
+import { userSchema, createUserSchema } from '@/user/user.schema';
+import type { UserDTO, CreateUserDTO } from '@/user/user.schema';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 type CreateUserRequest = FastifyRequest<{ Body: CreateUserDTO }>;
