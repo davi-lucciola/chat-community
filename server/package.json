@@ -1,0 +1,26 @@
+{
+  "name": "chat-community-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx watch ./src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.8",
+    "@types/node": "^24.10.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/swagger": "^9.6.1",
+    "@fastify/type-provider-typebox": "^6.1.0",
+    "@scalar/fastify-api-reference": "^1.40.1",
+    "@sinclair/typebox": "^0.34.41",
+    "fastify": "^5.6.2"
+  }
+}
