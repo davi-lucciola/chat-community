@@ -15,8 +15,8 @@ app.register(fastifyCors, {
 app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: 'Personal Budget Control',
-      description: 'API for personal budget control',
+      title: 'Chat Community API',
+      description: 'API for basic chat social media',
       version: '1.0.0',
     },
   },
