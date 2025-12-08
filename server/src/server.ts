@@ -1,34 +1,37 @@
 import Fastify from 'fastify';
 import * as routes from '@/routes';
-import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import fastifyCors from '@fastify/cors';
-import fastifySwagger from '@fastify/swagger';
-import ScalarApiReference from '@scalar/fastify-api-reference';
+import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
-const app = Fastify().withTypeProvider<TypeBoxTypeProvider>();
+export const createApp = async () => {
+  const app = Fastify().withTypeProvider<TypeBoxTypeProvider>();
 
-app.register(fastifyCors, {
-  origin: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-});
+  // Cors
+  await app.register(fastifyCors, {
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  });
 
-app.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: 'Chat Community API',
-      description: 'API for basic chat social media',
-      version: '1.0.0',
-    },
-  },
-});
+  // Docs
+  await routes.initSwaggerDocs(app);
 
-app.register(ScalarApiReference, {
-  routePrefix: '/docs',
-});
+  // Routes
+  await routes.initRoutes(app);
 
-routes.initRoutes(app);
+  return app;
+};
 
-app.listen({ port: 3333, host: '0.0.0.0' }).then(() => {
+const main = async () => {
+  try {
+    const app = await createApp();
+    await app.listen({ port: 3333, host: '0.0.0.0' });
+  } catch (err) {
+    console.error(err);
+    process.exit();
+  }
+};
+
+main().then(() => {
   console.log(
     '🔥 Server is running at http://localhost:3333\n' +
       'You can access the documentation at http://localhost:3333/docs',

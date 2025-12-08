@@ -1,12 +1,30 @@
 import type { FastifyInstance } from 'fastify';
-import { userRoutes } from './user/user.routes';
+import fastifySwagger from '@fastify/swagger';
+import ScalarApiReference from '@scalar/fastify-api-reference';
 
-export const initRoutes = (app: FastifyInstance) => {
-  app.after(() => {
-    app.get('/health', async (_, reply) => {
-      reply.send({ status: 'ok' });
-    });
+import { userRoutes } from '@/user/user.routes';
 
-    app.register(userRoutes);
+export const initRoutes = async (app: FastifyInstance) => {
+  app.get('/health', async (_, reply) => {
+    reply.send({ status: 'ok' });
+  });
+
+  await app.register(userRoutes);
+};
+
+export const initSwaggerDocs = async (app: FastifyInstance) => {
+  // Swagger
+  await app.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: 'Chat Community API',
+        description: 'API for basic chat social media',
+        version: '1.0.0',
+      },
+    },
+  });
+
+  await app.register(ScalarApiReference, {
+    routePrefix: '/docs',
   });
 };
