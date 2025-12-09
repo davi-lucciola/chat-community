@@ -24,7 +24,12 @@ export class AuthService {
       throw new UnauthorizedError('Invalid email or password.');
     }
 
-    const token = this.jwt.sign({ id: user.id, name: user.name, email: user.email });
+    const token = this.jwt.sign({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      imageUrl: user.imageUrl,
+    });
 
     return {
       type: 'Bearer',

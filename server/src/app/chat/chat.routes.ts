@@ -5,4 +5,6 @@ export const chatRoutes = async (app: FastifyInstance) => {
   app.register(chatController.getAll);
   app.register(chatController.getById);
   app.register(chatController.create);
+  app.register(chatController.becomeMember);
+  app.register(chatController.stopBeingMember);
 };

@@ -1,9 +1,9 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { domainErrorSchema } from '@/lib/errors';
 import { authenticate } from '@/lib/auth';
 import { UserService } from './user.service';
-import type { CreateUserDTO } from './user.schema';
+import type { CreateUserDTO, UserDTO } from './user.schema';
 import { userSchema, createUserSchema } from './user.schema';
+import { messageSchema } from '@/lib/schemas';
 
 const create = async (app: FastifyInstance) => {
   type Request = FastifyRequest<{ Body: CreateUserDTO }>;
@@ -15,7 +15,7 @@ const create = async (app: FastifyInstance) => {
       body: createUserSchema,
       response: {
         200: userSchema,
-        400: domainErrorSchema,
+        400: messageSchema,
       },
     },
   };
@@ -37,13 +37,13 @@ const getCurrent = async (app: FastifyInstance) => {
       tags: ['Users'],
       response: {
         200: userSchema,
-        401: domainErrorSchema,
+        401: messageSchema,
       },
     },
   };
 
   app.get('/users/me', options, async (request: Request, _: Response) => {
-    return request.user;
+    return request.user as UserDTO;
   });
 };
 

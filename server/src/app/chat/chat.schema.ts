@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { basicUserSchema } from '../user/user.schema';
 
 export const chatIdSchema = z.object({
   id: z.string(),
@@ -7,17 +8,15 @@ export const chatIdSchema = z.object({
 export const chatSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
-  createdByUser: z.object({
-    name: z.string(),
-  }),
+  description: z.string().nullish(),
+  createdByUser: basicUserSchema,
 });
 
 export const chatsSchema = z.array(chatSchema);
 
 export const createChatSchema = z.object({
   title: z.string({ error: 'Title must be a string.' }),
-  description: z.string({ error: 'Description must be a string. ' }),
+  description: z.string({ error: 'Description must be a string. ' }).nullish(),
 });
 
 export type ChatIdDTO = z.infer<typeof chatIdSchema>;

@@ -1,9 +1,16 @@
 import { z } from 'zod';
 
+export const basicUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  imageUrl: z.string().nullish(),
+});
+
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.email(),
+  imageUrl: z.string().nullish(),
 });
 
 export const createUserSchema = z.object({
