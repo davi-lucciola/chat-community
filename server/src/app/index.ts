@@ -3,10 +3,14 @@ import fastifyCors from '@fastify/cors';
 import mongoose from 'mongoose';
 import routes from '@/routes';
 import type { Settings } from '@/settings';
-import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import type { ZodTypeProvider } from 'fastify-type-provider-zod';
+import { validatorCompiler, serializerCompiler } from 'fastify-type-provider-zod';
 
 export const createApp = async (settings: Settings) => {
-  const app = Fastify().withTypeProvider<TypeBoxTypeProvider>();
+  const app = Fastify().withTypeProvider<ZodTypeProvider>();
+
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
 
   // Cors
   await app.register(fastifyCors, {

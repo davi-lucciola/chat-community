@@ -1,16 +1,20 @@
-import { Type, type Static } from '@sinclair/typebox';
+import { z } from 'zod';
 
-export const userSchema = Type.Object({
-  id: Type.String(),
-  name: Type.String(),
-  email: Type.String(),
+export const userSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.email(),
 });
 
-export const createUserSchema = Type.Object({
-  name: Type.String(),
-  email: Type.String({ format: 'email' }),
-  password: Type.String({ minLength: 4 }),
+export const createUserSchema = z.object({
+  name: z.string({ error: 'Invalid "name". Must be a string.' }),
+  email: z.email({
+    error: 'Invalid "email" format. Please ensure it contains an "@" symbol',
+  }),
+  password: z
+    .string({ error: 'Invalid "password". Must be a string.' })
+    .min(4, { error: 'Invalid "password". Must have at least 4 characters.' }),
 });
 
-export type UserDTO = Static<typeof userSchema>;
-export type CreateUserDTO = Static<typeof createUserSchema>;
+export type UserDTO = z.infer<typeof userSchema>;
+export type CreateUserDTO = z.infer<typeof createUserSchema>;
