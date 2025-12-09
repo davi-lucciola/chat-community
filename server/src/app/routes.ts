@@ -3,13 +3,15 @@ import fastifySwagger from '@fastify/swagger';
 import ScalarApiReference from '@scalar/fastify-api-reference';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
 
-import { userRoutes } from '@/app/user/user.routes';
+import { userRoutes } from './user/user.routes';
+import { authRoutes } from './auth/auth.routes';
 
 const initRoutes = async (app: FastifyInstance) => {
   app.get('/health', async (_, reply) => {
     reply.send({ status: 'ok' });
   });
 
+  await app.register(authRoutes);
   await app.register(userRoutes);
 };
 

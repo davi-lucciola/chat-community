@@ -12,8 +12,8 @@ export const createUserSchema = z.object({
     error: 'Invalid "email" format. Please ensure it contains an "@" symbol',
   }),
   password: z
-    .string({ error: 'Invalid "password". Must be a string.' })
-    .min(4, { error: 'Invalid "password". Must have at least 4 characters.' }),
+    .string({ error: 'Password be a string.' })
+    .min(4, { error: 'Password must have at least 4 characters.' }),
 });
 
 export type UserDTO = z.infer<typeof userSchema>;
