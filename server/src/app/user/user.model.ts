@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { chatSchema } from '@/app/chat/chat.model';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -12,6 +13,11 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  chats: {
+    type: [chatSchema],
+    required: true,
+    default: [],
   },
 });
 

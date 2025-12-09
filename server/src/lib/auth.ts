@@ -1,7 +1,7 @@
 import { UnauthorizedError } from '@/lib/errors';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-export const authPreHandler = async (request: FastifyRequest, _: FastifyReply) => {
+export const authenticate = async (request: FastifyRequest, _: FastifyReply) => {
   try {
     await request.jwtVerify();
   } catch (_) {
