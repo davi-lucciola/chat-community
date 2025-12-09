@@ -9,7 +9,7 @@
       "ESNext.Collection",
       "ESNext.Iterator"
     ],
-    "module": "nodenext",
+    "module": "node16",
     "target": "es2022",
     "strict": true,
     "esModuleInterop": true,
@@ -20,5 +20,6 @@
         "./src/*"
       ]
     }
-  }
+  },
+  "include": ["src"],
 }

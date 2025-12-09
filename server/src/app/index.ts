@@ -12,6 +12,9 @@ import { DomainError, NotFoundError, UnauthorizedError } from '@/lib/errors';
 export const createApp = async (settings: Settings) => {
   const app = Fastify().withTypeProvider<ZodTypeProvider>();
 
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
+
   // Cors
   await app.register(fastifyCors, {
     origin: true,
@@ -19,9 +22,6 @@ export const createApp = async (settings: Settings) => {
   });
 
   app.setErrorHandler(errorHandler);
-
-  app.setValidatorCompiler(validatorCompiler);
-  app.setSerializerCompiler(serializerCompiler);
 
   // Docs
   await routes.initSwaggerDocs(app);
