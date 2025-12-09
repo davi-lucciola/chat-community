@@ -1,29 +1,32 @@
 import mongoose from 'mongoose';
+import { basicUserDocument } from '../user/user.model';
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
+const chatMemberDocument = new mongoose.Schema({
+  member: {
+    type: basicUserDocument,
+    required: true,
   },
-  { _id: false },
-);
+  chatId: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+  },
+});
 
-export const chatSchema = new mongoose.Schema({
+const chatDocument = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
   description: {
     type: String,
-    required: true,
+    required: false,
     default: '',
   },
   createdByUser: {
-    type: userSchema,
+    type: basicUserDocument,
     required: true,
   },
 });
 
-export const Chat = mongoose.model('Chat', chatSchema);
+export const Chat = mongoose.model('Chat', chatDocument);
+export const ChatMember = mongoose.model('Chat_Member', chatMemberDocument);

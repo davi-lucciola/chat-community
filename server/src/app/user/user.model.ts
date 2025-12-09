@@ -1,7 +1,24 @@
 import mongoose from 'mongoose';
-import { chatSchema } from '@/app/chat/chat.model';
 
-const userSchema = new mongoose.Schema({
+export const basicUserDocument = new mongoose.Schema(
+  {
+    id: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+    },
+    imageUrl: {
+      type: String,
+      required: false,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false },
+);
+
+const userDocument = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -14,11 +31,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  chats: {
-    type: [chatSchema],
-    required: true,
-    default: [],
+  imageUrl: {
+    type: String,
+    required: false,
   },
 });
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userDocument);

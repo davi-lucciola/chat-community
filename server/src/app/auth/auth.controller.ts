@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { loginSchema, tokenSchema, type LoginDTO } from './auth.schema';
 import { AuthService } from './auth.service';
-import { domainErrorSchema } from '@/lib/errors';
+import { messageSchema } from '@/lib/schemas';
 
 const login = async (app: FastifyInstance) => {
   type Request = FastifyRequest<{ Body: LoginDTO }>;
@@ -13,7 +13,7 @@ const login = async (app: FastifyInstance) => {
       body: loginSchema,
       response: {
         200: tokenSchema,
-        401: domainErrorSchema,
+        401: messageSchema,
       },
     },
   };
