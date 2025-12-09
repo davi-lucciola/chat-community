@@ -1,0 +1,6 @@
+services:
+  db:
+    image: mongo:latest
+    container_name: chat-community-db
+    ports:
+      - 27017:27017

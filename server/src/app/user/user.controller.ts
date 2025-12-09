@@ -1,7 +1,7 @@
-import { randomUUID } from 'node:crypto';
-import { userSchema, createUserSchema } from '@/user/user.schema';
-import type { UserDTO, CreateUserDTO } from '@/user/user.schema';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { CreateUserDTO } from './user.schema';
+import userService from './user.service';
+import { userSchema, createUserSchema } from './user.schema';
 
 type CreateUserRequest = FastifyRequest<{ Body: CreateUserDTO }>;
 
@@ -16,12 +16,7 @@ const userController = {
       },
     },
     handler: async (request: CreateUserRequest, reply: FastifyReply) => {
-      // Mocked user
-      const newUser: UserDTO = {
-        id: randomUUID(),
-        ...request.body,
-      };
-
+      const newUser = await userService.createUser(request.body);
       reply.code(201).send(newUser);
     },
   },
