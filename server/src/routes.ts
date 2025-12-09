@@ -2,9 +2,9 @@ import type { FastifyInstance } from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import ScalarApiReference from '@scalar/fastify-api-reference';
 
-import { userRoutes } from '@/user/user.routes';
+import { userRoutes } from '@/app/user/user.routes';
 
-export const initRoutes = async (app: FastifyInstance) => {
+const initRoutes = async (app: FastifyInstance) => {
   app.get('/health', async (_, reply) => {
     reply.send({ status: 'ok' });
   });
@@ -12,7 +12,7 @@ export const initRoutes = async (app: FastifyInstance) => {
   await app.register(userRoutes);
 };
 
-export const initSwaggerDocs = async (app: FastifyInstance) => {
+const initSwaggerDocs = async (app: FastifyInstance) => {
   // Swagger
   await app.register(fastifySwagger, {
     openapi: {
@@ -27,4 +27,9 @@ export const initSwaggerDocs = async (app: FastifyInstance) => {
   await app.register(ScalarApiReference, {
     routePrefix: '/docs',
   });
+};
+
+export default {
+  initRoutes,
+  initSwaggerDocs,
 };
