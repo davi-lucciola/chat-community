@@ -17,6 +17,9 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
+			"complexity": {
+				"useArrowFunction":"off"
+			},
 			"recommended": true
 		}
 	},
