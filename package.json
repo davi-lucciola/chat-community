@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "@fastify/mongodb": "^9.0.2"
-  }
-}

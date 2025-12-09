@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import ScalarApiReference from '@scalar/fastify-api-reference';
+import { jsonSchemaTransform } from 'fastify-type-provider-zod';
 
 import { userRoutes } from '@/app/user/user.routes';
 
@@ -22,6 +23,7 @@ const initSwaggerDocs = async (app: FastifyInstance) => {
         version: '1.0.0',
       },
     },
+    transform: jsonSchemaTransform,
   });
 
   await app.register(ScalarApiReference, {
