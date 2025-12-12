@@ -8,8 +8,8 @@ export class CommunityService {
   constructor(private readonly currentUser: UserDTO) {}
 
   async findAll(): Promise<CommunityDTO[]> {
-    const communitys = await Community.find();
-    return communitys.map(this.communityToDto);
+    const communities = await Community.find();
+    return communities.map(this.communityToDto);
   }
 
   async findById(communityId: string): Promise<CommunityDTO> {
@@ -48,7 +48,7 @@ export class CommunityService {
     const community = await Community.create({
       title,
       description,
-      ownerUser: user,
+      owner: user,
     });
 
     await CommunityMember.create({
@@ -79,15 +79,18 @@ export class CommunityService {
     };
 
     const isCommunityMember = await CommunityMember.findOne({
-      communityId: community.id,
+      communityId: community._id,
       'user.id': user.id,
     });
 
     if (!isCommunityMember) {
       await CommunityMember.create({
         user,
-        communityId: community.id,
+        communityId: community._id,
       });
+
+      community.membersQuantity += 1;
+      await community.save();
     }
 
     return this.communityToDto(community);
@@ -108,14 +111,24 @@ export class CommunityService {
 
     const userId = new mongoose.Types.ObjectId(this.currentUser.id);
 
-    if (community.ownerUser.id.toString() === userId.toString()) {
+    if (community.owner.id.toString() === userId.toString()) {
       throw new DomainError('You cannot stop being a member of your own community.');
     }
 
-    await CommunityMember.deleteOne({
-      communityId: community.id,
+    const isCommunityMember = await CommunityMember.findOne({
+      communityId: community._id,
       'user.id': userId,
     });
+
+    if (isCommunityMember) {
+      await CommunityMember.deleteOne({
+        communityId: community.id,
+        'user.id': userId,
+      });
+
+      community.membersQuantity -= 1;
+      await community.save();
+    }
 
     return this.communityToDto(community);
   }
@@ -126,14 +139,15 @@ export class CommunityService {
 
   private communityToDto(community: InstanceType<typeof Community>): CommunityDTO {
     return {
-      id: community._id.toString(),
+      id: community.id.toString(),
       title: community.title,
-      description: community.description,
-      ownerUser: {
-        id: community.ownerUser.id.toString(),
-        name: community.ownerUser.name,
-        imageUrl: community.ownerUser.imageUrl,
+      owner: {
+        id: community.owner.id.toString(),
+        name: community.owner.name,
+        imageUrl: community.owner.imageUrl,
       },
+      description: community.description ?? null,
+      membersQuantity: community.membersQuantity,
     };
   }
 }

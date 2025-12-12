@@ -20,9 +20,10 @@ export class UserService {
     });
 
     return {
-      id: newUser._id.toString(),
+      id: newUser.id,
       name: newUser.name,
       email: newUser.email,
+      imageUrl: newUser.imageUrl ?? null,
     };
   }
 }
