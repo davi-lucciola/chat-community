@@ -5,7 +5,7 @@ import { jsonSchemaTransform } from 'fastify-type-provider-zod';
 
 import { userRoutes } from './user/user.routes';
 import { authRoutes } from './auth/auth.routes';
-import { chatRoutes } from './chat/chat.routes';
+import { communityRoutes } from './community/community.routes';
 
 const initRoutes = async (app: FastifyInstance) => {
   app.get('/health', async (_, reply) => {
@@ -14,7 +14,7 @@ const initRoutes = async (app: FastifyInstance) => {
 
   await app.register(authRoutes);
   await app.register(userRoutes);
-  await app.register(chatRoutes);
+  await app.register(communityRoutes);
 };
 
 const initSwaggerDocs = async (app: FastifyInstance) => {

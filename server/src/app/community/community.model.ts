@@ -1,18 +1,18 @@
 import mongoose from 'mongoose';
 import { basicUserDocument } from '../user/user.model';
 
-const chatMemberDocument = new mongoose.Schema({
+const communityMemberDocument = new mongoose.Schema({
   user: {
     type: basicUserDocument,
     required: true,
   },
-  chatId: {
+  communityId: {
     type: mongoose.Types.ObjectId,
     required: true,
   },
 });
 
-const chatDocument = new mongoose.Schema({
+const communityDocument = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -28,5 +28,8 @@ const chatDocument = new mongoose.Schema({
   },
 });
 
-export const Chat = mongoose.model('Chat', chatDocument);
-export const ChatMember = mongoose.model('Chat_Member', chatMemberDocument);
+export const Community = mongoose.model('Community', communityDocument);
+export const CommunityMember = mongoose.model(
+  'Community_Member',
+  communityMemberDocument,
+);
