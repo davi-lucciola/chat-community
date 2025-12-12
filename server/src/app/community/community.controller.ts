@@ -2,15 +2,15 @@ import type { FastifyInstance } from 'fastify';
 import type { ParamRequest, Request, Reply } from '@/lib/http';
 import type { UserDTO } from '@/app/user/user.schema';
 import type { CreateCommunityDTO, CommunityIdDTO } from './community.schema';
-import { authenticate } from '@/lib/auth';
-import { MessageSchema } from '@/lib/schemas';
-import { CommunityService } from './community.service';
 import {
-  CommunitysSchema,
+  CommunitiesSchema,
   CommunitySchema,
   CommunityIdSchema,
   CreateCommunitySchema,
 } from './community.schema';
+import { authenticate } from '@/lib/auth';
+import { MessageSchema } from '@/lib/schemas';
+import { CommunityService } from './community.service';
 
 const communityController = {
   getAll: async (app: FastifyInstance) => {
@@ -22,7 +22,7 @@ const communityController = {
         schema: {
           tags: ['Community'],
           response: {
-            200: CommunitysSchema,
+            200: CommunitiesSchema,
             401: MessageSchema,
           },
         },

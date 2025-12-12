@@ -10,7 +10,7 @@ export const UserSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.email(),
-  imageUrl: z.string().nullish(),
+  imageUrl: z.string().nullable(),
 });
 
 export const CreateUserSchema = z.object({

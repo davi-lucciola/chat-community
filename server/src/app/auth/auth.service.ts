@@ -28,7 +28,7 @@ export class AuthService {
       id: user.id,
       name: user.name,
       email: user.email,
-      imageUrl: user.imageUrl,
+      imageUrl: user.imageUrl ?? null,
     });
 
     return {
