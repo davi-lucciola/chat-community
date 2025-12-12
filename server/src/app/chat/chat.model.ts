@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { basicUserDocument } from '../user/user.model';
 
 const chatMemberDocument = new mongoose.Schema({
-  member: {
+  user: {
     type: basicUserDocument,
     required: true,
   },
@@ -22,7 +22,7 @@ const chatDocument = new mongoose.Schema({
     required: false,
     default: '',
   },
-  createdByUser: {
+  ownerUser: {
     type: basicUserDocument,
     required: true,
   },

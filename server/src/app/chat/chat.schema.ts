@@ -1,24 +1,24 @@
 import { z } from 'zod';
-import { basicUserSchema } from '../user/user.schema';
+import { UserBasicSchema } from '../user/user.schema';
 
-export const chatIdSchema = z.object({
+export const ChatIdSchema = z.object({
   id: z.string(),
 });
 
-export const chatSchema = z.object({
+export const ChatSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().nullish(),
-  createdByUser: basicUserSchema,
+  ownerUser: UserBasicSchema,
 });
 
-export const chatsSchema = z.array(chatSchema);
+export const ChatsSchema = z.array(ChatSchema);
 
-export const createChatSchema = z.object({
+export const CreateChatSchema = z.object({
   title: z.string({ error: 'Title must be a string.' }),
   description: z.string({ error: 'Description must be a string. ' }).nullish(),
 });
 
-export type ChatIdDTO = z.infer<typeof chatIdSchema>;
-export type ChatDTO = z.infer<typeof chatSchema>;
-export type CreateChatDTO = z.infer<typeof createChatSchema>;
+export type ChatIdDTO = z.infer<typeof ChatIdSchema>;
+export type ChatDTO = z.infer<typeof ChatSchema>;
+export type CreateChatDTO = z.infer<typeof CreateChatSchema>;

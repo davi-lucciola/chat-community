@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { DomainError, NotFoundError } from '@/lib/errors';
-import type { UserDTO } from '../user/user.schema';
 import { Chat, ChatMember } from './chat.model';
+import type { UserDTO } from '../user/user.schema';
 import type { ChatDTO, CreateChatDTO } from './chat.schema';
 
 export class ChatService {
@@ -13,6 +13,10 @@ export class ChatService {
   }
 
   async findById(chatId: string): Promise<ChatDTO> {
+    if (!this.isValidChatId(chatId)) {
+      throw new NotFoundError('Chat not found');
+    }
+
     const chat = await Chat.findOne({
       _id: new mongoose.Types.ObjectId(chatId),
     });
@@ -44,11 +48,11 @@ export class ChatService {
     const chat = await Chat.create({
       title,
       description,
-      createdByUser: user,
+      ownerUser: user,
     });
 
     await ChatMember.create({
-      member: user,
+      user,
       chatId: chat._id,
     });
 
@@ -56,6 +60,10 @@ export class ChatService {
   }
 
   async becomeMember(chatId: string): Promise<ChatDTO> {
+    if (!this.isValidChatId(chatId)) {
+      throw new NotFoundError('Chat not found');
+    }
+
     const chat = await Chat.findOne({
       _id: new mongoose.Types.ObjectId(chatId),
     });
@@ -71,13 +79,13 @@ export class ChatService {
     };
 
     const isChatMember = await ChatMember.findOne({
-      'member.id': user.id,
       chatId: chat.id,
+      'user.id': user.id,
     });
 
     if (!isChatMember) {
       await ChatMember.create({
-        member: user,
+        user,
         chatId: chat.id,
       });
     }
@@ -86,6 +94,10 @@ export class ChatService {
   }
 
   async stopBeingMember(chatId: string): Promise<ChatDTO> {
+    if (!this.isValidChatId(chatId)) {
+      throw new NotFoundError('Chat not found');
+    }
+
     const chat = await Chat.findOne({
       _id: new mongoose.Types.ObjectId(chatId),
     });
@@ -96,27 +108,31 @@ export class ChatService {
 
     const userId = new mongoose.Types.ObjectId(this.currentUser.id);
 
-    if (chat.createdByUser.id.toString() === userId.toString()) {
+    if (chat.ownerUser.id.toString() === userId.toString()) {
       throw new DomainError('You cannot stop being a member of your own chat.');
     }
 
     await ChatMember.deleteOne({
-      'member.id': userId,
       chatId: chat.id,
+      'user.id': userId,
     });
 
     return this.chatToDto(chat);
   }
 
-  private chatToDto(chat: InstanceType<typeof Chat>) {
+  private isValidChatId(chatId: string) {
+    return mongoose.Types.ObjectId.isValid(chatId);
+  }
+
+  private chatToDto(chat: InstanceType<typeof Chat>): ChatDTO {
     return {
       id: chat._id.toString(),
       title: chat.title,
       description: chat.description,
-      createdByUser: {
-        id: chat.createdByUser.id.toString(),
-        name: chat.createdByUser.name,
-        imageUrl: chat.createdByUser.imageUrl,
+      ownerUser: {
+        id: chat.ownerUser.id.toString(),
+        name: chat.ownerUser.name,
+        imageUrl: chat.ownerUser.imageUrl,
       },
     };
   }

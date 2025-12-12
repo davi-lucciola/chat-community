@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
-export const messageSchema = z.object({
+export const MessageSchema = z.object({
   message: z.string(),
 });

@@ -1,29 +1,29 @@
-import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { loginSchema, tokenSchema, type LoginDTO } from './auth.schema';
+import type { FastifyInstance } from 'fastify';
+import { LoginSchema, TokenSchema, type LoginDTO } from './auth.schema';
 import { AuthService } from './auth.service';
-import { messageSchema } from '@/lib/schemas';
+import { MessageSchema } from '@/lib/schemas';
+import type { Request, Reply } from '@/lib/http';
 
 const authController = {
   login: async (app: FastifyInstance) => {
-    type Request = FastifyRequest<{ Body: LoginDTO }>;
-    type Reply = FastifyReply;
-
-    const options = {
-      schema: {
-        tags: ['Auth'],
-        body: loginSchema,
-        response: {
-          200: tokenSchema,
-          401: messageSchema,
+    app.post(
+      '/login',
+      {
+        schema: {
+          tags: ['Auth'],
+          body: LoginSchema,
+          response: {
+            200: TokenSchema,
+            401: MessageSchema,
+          },
         },
       },
-    };
-
-    app.post('/login', options, async (request: Request, _: Reply) => {
-      const authService = new AuthService(app.jwt);
-      const tokenResponse = await authService.login(request.body);
-      return tokenResponse;
-    });
+      async (request: Request<LoginDTO>, _: Reply) => {
+        const authService = new AuthService(app.jwt);
+        const tokenResponse = await authService.login(request.body);
+        return tokenResponse;
+      },
+    );
   },
 };
 
