@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// Get
 export const UserBasicSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -13,7 +14,10 @@ export const UserSchema = z.object({
   imageUrl: z.string().nullable(),
 });
 
-export const CreateUserSchema = z.object({
+export type UserDTO = z.infer<typeof UserSchema>;
+
+// Create
+export const SaveUserSchema = z.object({
   name: z.string({ error: 'Invalid "name". Must be a string.' }),
   email: z.email({
     error: 'Invalid "email" format. Please ensure it contains an "@" symbol',
@@ -23,5 +27,4 @@ export const CreateUserSchema = z.object({
     .min(4, { error: 'Password must have at least 4 characters.' }),
 });
 
-export type UserDTO = z.infer<typeof UserSchema>;
-export type CreateUserDTO = z.infer<typeof CreateUserSchema>;
+export type SaveUserDTO = z.infer<typeof SaveUserSchema>;
