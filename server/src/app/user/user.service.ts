@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { User } from './user.model';
 import { NotFoundError } from '@/lib/errors';
 import type { CreateUserDTO, UserDTO } from './user.schema';
@@ -25,5 +26,12 @@ export class UserService {
       email: newUser.email,
       imageUrl: newUser.imageUrl ?? null,
     };
+  }
+
+  async updateUsername(name: string, userId: string) {
+    const currentUserId = new mongoose.Types.ObjectId(userId);
+    await User.updateOne({ _id: currentUserId }, { name: name });
+
+    // Update "user.name" in every document witch uses that
   }
 }

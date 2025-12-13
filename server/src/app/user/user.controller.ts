@@ -1,10 +1,10 @@
 import type { FastifyInstance } from 'fastify';
 import { authenticate } from '@/lib/auth';
 import { UserService } from './user.service';
-import type { CreateUserDTO, UserDTO } from './user.schema';
-import { UserSchema, CreateUserSchema } from './user.schema';
+import type { CreateUserDTO, UpdateUsernameDTO, UserDTO } from './user.schema';
+import { UserSchema, CreateUserSchema, UpdateUsernameSchema } from './user.schema';
 import { MessageSchema } from '@/lib/schemas';
-import type { Request, Reply } from '@/lib/http';
+import type { Request, Reply, ParamRequest } from '@/lib/http';
 
 const userController = {
   create: async (app: FastifyInstance) => {
@@ -26,7 +26,7 @@ const userController = {
       },
     );
   },
-  getCurrent: async (app: FastifyInstance) => {
+  getCurrentUser: async (app: FastifyInstance) => {
     app.addHook('onRequest', authenticate);
 
     app.get(
@@ -42,6 +42,33 @@ const userController = {
       },
       async (request: Request, _: Reply) => {
         return request.user as UserDTO;
+      },
+    );
+  },
+  updateName: async (app: FastifyInstance) => {
+    app.addHook('onRequest', authenticate);
+
+    app.patch(
+      '/users/me/:name',
+      {
+        schema: {
+          tags: ['Users'],
+          params: UpdateUsernameSchema,
+          response: {
+            200: MessageSchema,
+            401: MessageSchema,
+          },
+        },
+      },
+      async (request: ParamRequest<UpdateUsernameDTO>, _: Reply) => {
+        const userService = new UserService();
+
+        const { name } = request.params;
+        const { id: userId } = request.user as UserDTO;
+
+        await userService.updateUsername(name, userId);
+
+        return { message: `Your user name has been updated to ${name}.` };
       },
     );
   },

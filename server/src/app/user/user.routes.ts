@@ -3,5 +3,5 @@ import userController from './user.controller';
 
 export const userRoutes = async (app: FastifyInstance) => {
   app.register(userController.create);
-  app.register(userController.getCurrent);
+  app.register(userController.getCurrentUser);
 };
