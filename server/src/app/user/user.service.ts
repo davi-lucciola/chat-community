@@ -66,13 +66,6 @@ export class UserService {
     return this.userToDto(user);
   }
 
-  async updateUsername(name: string, userId: string) {
-    const currentUserId = new mongoose.Types.ObjectId(userId);
-    await User.updateOne({ _id: currentUserId }, { name: name });
-
-    // Update "user.name" in every document witch uses that
-  }
-
   private userToDto(user: InstanceType<typeof User>): UserDTO {
     return {
       id: user.id,
