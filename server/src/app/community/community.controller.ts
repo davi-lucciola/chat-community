@@ -21,6 +21,7 @@ const communityController = {
       {
         schema: {
           tags: ['Community'],
+          description: 'Get all communities.',
           response: {
             200: CommunitiesSchema,
             401: MessageSchema,
@@ -43,6 +44,7 @@ const communityController = {
       {
         schema: {
           tags: ['Community'],
+          description: 'Get a community by id.',
           params: CommunityIdSchema,
           response: {
             200: CommunitySchema,
@@ -69,6 +71,7 @@ const communityController = {
       {
         schema: {
           tags: ['Community'],
+          description: 'Create your own community.',
           body: CreateCommunitySchema,
           response: {
             200: CommunitySchema,
@@ -92,6 +95,7 @@ const communityController = {
       {
         schema: {
           tags: ['Community'],
+          description: 'Become a member of a community.',
           params: CommunityIdSchema,
           response: {
             200: MessageSchema,
@@ -117,6 +121,7 @@ const communityController = {
       {
         schema: {
           tags: ['Community'],
+          description: 'Leave a community as member.',
           params: CommunityIdSchema,
           response: {
             200: MessageSchema,

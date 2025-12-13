@@ -17,7 +17,7 @@ export const UserSchema = z.object({
 export type UserDTO = z.infer<typeof UserSchema>;
 
 // Create
-export const CreateUserSchema = z.object({
+export const SaveUserSchema = z.object({
   name: z.string({ error: 'Invalid "name". Must be a string.' }),
   email: z.email({
     error: 'Invalid "email" format. Please ensure it contains an "@" symbol',
@@ -27,25 +27,4 @@ export const CreateUserSchema = z.object({
     .min(4, { error: 'Password must have at least 4 characters.' }),
 });
 
-export type CreateUserDTO = z.infer<typeof CreateUserSchema>;
-
-// Update
-export const UpdateUsernameSchema = z.object({
-  name: z.string({ error: 'Invalid "name". Must be a string.' }),
-});
-
-export type UpdateUsernameDTO = z.infer<typeof UpdateUsernameSchema>;
-
-export const UpdateUserSchema = UpdateUsernameSchema.extend({
-  email: z.email({
-    error: 'Invalid "email" format. Please ensure it contains an "@" symbol',
-  }),
-  oldPassword: z
-    .string({ error: 'Password be a string.' })
-    .min(4, { error: 'Password must have at least 4 characters.' }),
-  newPassword: z
-    .string({ error: 'Password be a string.' })
-    .min(4, { error: 'Password must have at least 4 characters.' }),
-});
-
-export type UpdateUserDTO = z.infer<typeof UpdateUserSchema>;
+export type SaveUserDTO = z.infer<typeof SaveUserSchema>;

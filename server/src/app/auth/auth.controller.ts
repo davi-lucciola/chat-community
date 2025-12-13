@@ -11,6 +11,7 @@ const authController = {
       {
         schema: {
           tags: ['Auth'],
+          description: 'Create a JWT Token for your user.',
           body: LoginSchema,
           response: {
             200: TokenSchema,
