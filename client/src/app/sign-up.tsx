@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { ChatCommunityLogo } from '@/components/logo';
 
 export const Route = createFileRoute('/sign-up')({
   component: SignUp,
@@ -28,7 +29,12 @@ export type CreateUserPayload = z.infer<typeof createUserSchema>;
 function SignUp() {
   const form = useForm({
     resolver: zodResolver(createUserSchema),
-    defaultValues: {},
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    },
   });
 
   const onSubmit = (payload: CreateUserPayload) => {
@@ -36,7 +42,10 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex justify-center items-center">
+    <div className="min-h-screen bg-background flex flex-col justify-center items-center gap-8">
+      <Link to='/'>
+        <ChatCommunityLogo />
+      </Link>
       <Card className="max-w-xl w-full">
         <CardHeader>
           <h1 className="text-2xl">Cadastre-se</h1>
