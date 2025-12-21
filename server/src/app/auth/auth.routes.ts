@@ -2,5 +2,6 @@ import type { FastifyInstance } from 'fastify';
 import authController from './auth.controller';
 
 export const authRoutes = async (app: FastifyInstance) => {
-  app.register(authController.login);
+  app.register(authController.signIn);
+  app.register(authController.signUp);
 };

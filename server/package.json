@@ -5,7 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch --env-file=.env ./src/server.ts",
-    "start": "node dist/main.js"
+    "start": "node dist/main.js",
+    "format": "biome check --write"
   },
   "keywords": [],
   "author": "",
