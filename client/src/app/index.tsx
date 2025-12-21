@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowRight, MessageCircle, Sparkles, Users } from 'lucide-react';
+import { ChatCommunityLogo } from '@/components/logo';
 import { ThemeToogle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -15,10 +16,7 @@ function Index() {
       <nav className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="size-8 text-primary" />
-              <span className="text-xl font-bold text-foreground">Chat Community</span>
-            </div>
+            <ChatCommunityLogo />
             <div className="flex items-center gap-4">
               <Button variant="ghost">About</Button>
               <Button variant="ghost">Features</Button>
