@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react";
+import { MessageCircle } from 'lucide-react';
 
 export function ChatCommunityLogo() {
   return (

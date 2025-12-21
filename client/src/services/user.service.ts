@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { API_URL, ApiError } from '@/lib/api';
 
 type UserDTO = {
@@ -8,7 +7,11 @@ type UserDTO = {
   imageUrl?: string;
 };
 
-type CreateUserDTO = {};
+type CreateUserDTO = {
+  name: string;
+  email: string;
+  password: string;
+};
 
 async function createUser(userDTO: CreateUserDTO): Promise<UserDTO> {
   const res = await fetch(`${API_URL}/users`, {

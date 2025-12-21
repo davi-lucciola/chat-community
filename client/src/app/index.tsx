@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowRight, MessageCircle, Sparkles, Users } from 'lucide-react';
+import { ChatCommunityLogo } from '@/components/logo';
 import { ThemeToogle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ChatCommunityLogo } from '@/components/logo';
 
 export const Route = createFileRoute('/')({
   component: Index,
