@@ -11,7 +11,7 @@ const userController = {
     app.addHook('onRequest', authenticate);
 
     app.get(
-      '/users/me',
+      '/users',
       {
         schema: {
           tags: ['Users'],
@@ -29,31 +29,11 @@ const userController = {
       },
     );
   },
-  create: async (app: FastifyInstance) => {
-    app.post(
-      '/users',
-      {
-        schema: {
-          tags: ['Users'],
-          description: 'Create a new user.',
-          body: SaveUserSchema,
-          response: {
-            200: UserSchema,
-            400: MessageSchema,
-          },
-        },
-      },
-      async (request: Request<SaveUserDTO>, _: Reply) => {
-        const userService = new UserService();
-        return await userService.create(request.body);
-      },
-    );
-  },
   update: async (app: FastifyInstance) => {
     app.addHook('onRequest', authenticate);
 
     app.put(
-      '/users/me',
+      '/users',
       {
         schema: {
           tags: ['Users'],
