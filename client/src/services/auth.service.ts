@@ -7,11 +7,38 @@ type UserDTO = {
   imageUrl?: string;
 };
 
+type LoginDTO = {
+  email: string;
+  password: string;
+};
+
+type TokenDTO = {
+  accessToken: string;
+  type: string;
+};
+
 type CreateUserDTO = {
   name: string;
   email: string;
   password: string;
 };
+
+async function login(loginDTO: LoginDTO): Promise<TokenDTO> {
+  const res = await fetch(`${API_URL}/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(loginDTO),
+  });
+
+  if (!res.ok) {
+    const body = await res.json();
+    throw new ApiError(body.message);
+  }
+
+  return res.json();
+}
 
 async function createUser(userDTO: CreateUserDTO): Promise<UserDTO> {
   const res = await fetch(`${API_URL}/users`, {
@@ -31,5 +58,6 @@ async function createUser(userDTO: CreateUserDTO): Promise<UserDTO> {
 }
 
 export default {
+  login,
   createUser,
 };

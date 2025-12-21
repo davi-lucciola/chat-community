@@ -10,14 +10,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import userService from '@/services/user.service';
 import { toastStyles } from '@/components/ui/sonner';
+import userService from '@/services/auth.service';
 
 export const Route = createFileRoute('/sign-up')({
   component: SignUp,
 });
 
-export const createUserSchema = z
+export const signUpSchema = z
   .object({
     name: z.string().trim().min(1, { error: 'The name is required.' }),
     email: z.email({ error: 'The email should be valid.' }),
@@ -31,13 +31,13 @@ export const createUserSchema = z
     error: 'The password must be equals to the confirmation.',
   });
 
-export type CreateUserPayload = z.infer<typeof createUserSchema>;
+export type SignUpPayload = z.infer<typeof signUpSchema>;
 
 function SignUp() {
   const navigate = useNavigate();
 
   const { mutateAsync: createUser, isPending } = useMutation({
-    mutationKey: ['user', 'register'],
+    mutationKey: ['auth', 'sign-up'],
     mutationFn: userService.createUser,
     onError: (error) => {
       toast.error(error.message, toastStyles.error);
@@ -45,7 +45,7 @@ function SignUp() {
   });
 
   const form = useForm({
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -54,7 +54,7 @@ function SignUp() {
     },
   });
 
-  const onSubmit = async (payload: CreateUserPayload) => {
+  const onSubmit = async (payload: SignUpPayload) => {
     await createUser({
       name: payload.name,
       email: payload.email,
@@ -161,7 +161,7 @@ function SignUp() {
           <p>Already have a account?</p>
           <Link to="/sign-in">
             <Button variant="link" className="hover:cursor-pointer">
-              Sign in with your account
+              Login with your account
             </Button>
           </Link>
         </CardFooter>
