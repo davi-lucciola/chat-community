@@ -99,7 +99,7 @@ function SignIn() {
               />
 
               <Button disabled={isPending}>
-                Cadastrar
+                Login
                 {isPending && <Loader className="w-4 h-4 animate-spin" />}
               </Button>
             </FieldGroup>
