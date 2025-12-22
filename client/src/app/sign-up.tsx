@@ -11,7 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { toastStyles } from '@/components/ui/sonner';
-import userService from '@/services/auth.service';
+import authService from '@/services/auth.service';
 
 export const Route = createFileRoute('/sign-up')({
   component: SignUp,
@@ -38,7 +38,7 @@ function SignUp() {
 
   const { mutateAsync: createUser, isPending } = useMutation({
     mutationKey: ['auth', 'sign-up'],
-    mutationFn: userService.createUser,
+    mutationFn: authService.createUser,
     onError: (error) => {
       toast.error(error.message, toastStyles.error);
     },
@@ -151,7 +151,7 @@ function SignUp() {
               />
 
               <Button disabled={isPending}>
-                Cadastrar
+                Create your account
                 {isPending && <Loader className="w-4 h-4 animate-spin" />}
               </Button>
             </FieldGroup>

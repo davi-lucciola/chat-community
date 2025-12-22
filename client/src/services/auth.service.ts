@@ -24,7 +24,7 @@ type CreateUserDTO = {
 };
 
 async function login(loginDTO: LoginDTO): Promise<TokenDTO> {
-  const res = await fetch(`${API_URL}/login`, {
+  const res = await fetch(`${API_URL}/sign-in`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ async function login(loginDTO: LoginDTO): Promise<TokenDTO> {
 }
 
 async function createUser(userDTO: CreateUserDTO): Promise<UserDTO> {
-  const res = await fetch(`${API_URL}/users`, {
+  const res = await fetch(`${API_URL}/sign-up`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
