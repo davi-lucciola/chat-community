@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { MessageSchema } from '@/lib/schemas';
 import type { Request, Reply } from '@/lib/http';
 import { UserService } from '../user/user.service';
-import { TOKEN_KEY } from '@/lib/auth';
+import { TOKEN_KEY, authenticate } from '@/lib/auth';
 
 const authController = {
   signIn: async (app: FastifyInstance) => {
@@ -15,7 +15,7 @@ const authController = {
       {
         schema: {
           tags: ['Auth'],
-          description: 'Create a JWT Token for your user.',
+          description: 'Create a authenticated session with JWT Token.',
           body: LoginSchema,
           response: {
             200: TokenSchema,
@@ -57,6 +57,27 @@ const authController = {
         const user = await userService.create(request.body);
 
         reply.send(user);
+      },
+    );
+  },
+  signOut: async (app: FastifyInstance) => {
+    app.addHook('preHandler', authenticate);
+
+    app.delete(
+      '/sign-out',
+      {
+        schema: {
+          tags: ['Auth'],
+          description: 'Delete a authenticated session.',
+          response: {
+            200: MessageSchema,
+            401: MessageSchema,
+          },
+        },
+      },
+      async (_: Request, reply: Reply) => {
+        reply.clearCookie(TOKEN_KEY);
+        reply.send({ message: 'Signed out successfully' });
       },
     );
   },

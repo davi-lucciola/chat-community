@@ -16,7 +16,13 @@ export const errorHandler = (
   } else if (error instanceof DomainError) {
     reply.code(400).send({ message: error.message });
   } else {
-    console.error(error);
-    reply.code(500).send({ message: 'Sorry, a unexpected error occurred.' });
+    // biome-ignore lint/suspicious/noExplicitAny: zod validation error
+    const errorAny = error as any;
+    reply.code(500).send({
+      message:
+        errorAny.code === 'FST_ERR_VALIDATION'
+          ? errorAny.validation[0].message
+          : 'Sorry, a unexpected error occurred.',
+    });
   }
 };
