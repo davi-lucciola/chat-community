@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Loader } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -12,6 +12,9 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input';
 import { toastStyles } from '@/components/ui/sonner';
 import authService from '@/services/auth.service';
+import { useEffect } from 'react';
+import { setUnauthorizedHandler } from '@/lib/api';
+import { useAuth } from '@/context/auth.context';
 
 export const Route = createFileRoute('/sign-in')({
   component: SignIn,
@@ -26,6 +29,7 @@ export type SignInPayload = z.infer<typeof signInSchema>;
 
 function SignIn() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { mutateAsync: login, isPending } = useMutation({
     mutationKey: ['auth', 'sign-in'],
@@ -46,8 +50,10 @@ function SignIn() {
   const onSubmit = async (payload: SignInPayload) => {
     await login(payload);
 
-    toast.success('Authenticated successfully.', toastStyles.success);
     navigate({ to: '/home' });
+    toast.success('Authenticated successfully.', toastStyles.success);
+
+    await queryClient.refetchQueries({ queryKey: ['user'] });
   };
 
   return (
@@ -107,7 +113,7 @@ function SignIn() {
         </CardContent>
         <CardFooter>
           <p>Does not have a account?</p>
-          <Link to="/sign-in">
+          <Link to="/sign-up">
             <Button variant="link" className="hover:cursor-pointer">
               Create your account
             </Button>

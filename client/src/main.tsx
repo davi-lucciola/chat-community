@@ -6,6 +6,7 @@ import { ThemeProvider } from './components/theme/theme-provider.tsx';
 import { router } from './router.tsx';
 import './index.css';
 import { Toaster } from 'sonner';
+import { AuthProvider } from './context/auth.context.tsx';
 
 const queryClient = new QueryClient();
 
