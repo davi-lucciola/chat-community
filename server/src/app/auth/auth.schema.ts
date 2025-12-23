@@ -4,9 +4,7 @@ export const LoginSchema = z.object({
   email: z.email({
     error: 'Invalid "email" format, please ensure it contains an "@" symbol',
   }),
-  password: z
-    .string({ error: 'Password be a string.' })
-    .min(4, { error: 'Password must have at least 4 characters.' }),
+  password: z.string({ error: 'Password be a string.' }),
 });
 
 export const TokenSchema = z.object({

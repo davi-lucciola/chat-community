@@ -1,5 +1,5 @@
 import hash from '@/utils/hash';
-import type { JWT } from 'fastify-jwt';
+import type { JWT } from '@fastify/jwt';
 import { User } from '@/app/user/user.model';
 import { UnauthorizedError } from '@/lib/errors';
 import type { LoginDTO, TokenDTO } from './auth.schema';

@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { MessageSchema } from '@/lib/schemas';
 import type { Request, Reply } from '@/lib/http';
 import { UserService } from '../user/user.service';
+import { TOKEN_KEY } from '@/lib/auth';
 
 const authController = {
   signIn: async (app: FastifyInstance) => {
@@ -22,10 +23,18 @@ const authController = {
           },
         },
       },
-      async (request: Request<LoginDTO>, _: Reply) => {
+      async (request: Request<LoginDTO>, reply: Reply) => {
         const authService = new AuthService(app.jwt);
-        const tokenResponse = await authService.login(request.body);
-        return tokenResponse;
+        const tokenPayload = await authService.login(request.body);
+
+        reply.setCookie(TOKEN_KEY, tokenPayload.accessToken, {
+          path: '/',
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+        });
+
+        reply.send(tokenPayload);
       },
     );
   },
@@ -43,9 +52,11 @@ const authController = {
           },
         },
       },
-      async (request: Request<SaveUserDTO>, _: Reply) => {
+      async (request: Request<SaveUserDTO>, reply: Reply) => {
         const userService = new UserService();
-        return await userService.create(request.body);
+        const user = await userService.create(request.body);
+
+        reply.send(user);
       },
     );
   },

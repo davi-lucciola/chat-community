@@ -14,6 +14,8 @@ export const createApp = async () => {
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
+  app.setErrorHandler(errorHandler);
+
   // Plugins
   await app.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
@@ -21,8 +23,6 @@ export const createApp = async () => {
 
   // Routes
   await routes.initRoutes(app);
-
-  app.setErrorHandler(errorHandler);
 
   // Database
   await mongoose.connect(settings.MONGODB_URL);
