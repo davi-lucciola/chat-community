@@ -14,7 +14,7 @@ import { CommunityService } from './community.service';
 
 const communityController = {
   getAll: async (app: FastifyInstance) => {
-    app.addHook('onRequest', authenticate);
+    app.addHook('preHandler', authenticate);
 
     app.get(
       '/communities',
@@ -39,7 +39,7 @@ const communityController = {
     );
   },
   getById: async (app: FastifyInstance) => {
-    app.addHook('onRequest', authenticate);
+    app.addHook('preHandler', authenticate);
 
     app.get(
       '/communities/:id',
@@ -68,7 +68,7 @@ const communityController = {
     );
   },
   create: async (app: FastifyInstance) => {
-    app.addHook('onRequest', authenticate);
+    app.addHook('preHandler', authenticate);
 
     app.post(
       '/communities',
@@ -95,7 +95,7 @@ const communityController = {
     );
   },
   becomeMember: async (app: FastifyInstance) => {
-    app.addHook('onRequest', authenticate);
+    app.addHook('preHandler', authenticate);
 
     app.put(
       '/communities/:id/member',
@@ -123,7 +123,7 @@ const communityController = {
     );
   },
   stopBeingMember: async (app: FastifyInstance) => {
-    app.addHook('onRequest', authenticate);
+    app.addHook('preHandler', authenticate);
 
     app.delete(
       '/communities/:id/member',

@@ -1,4 +1,5 @@
 import fp from 'fastify-plugin';
+import { TOKEN_KEY } from '@/lib/auth';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
 
 const swaggerPlugin = fp((app, _, done) => {
@@ -12,14 +13,14 @@ const swaggerPlugin = fp((app, _, done) => {
       },
       components: {
         securitySchemes: {
-          httpBearer: {
-            type: 'http',
-            scheme: 'bearer',
-            bearerFormat: 'JWT',
+          cookieAuth: {
+            type: 'apiKey',
+            in: 'cookie',
+            name: TOKEN_KEY,
           },
         },
       },
-      security: [{ httpBearer: [] }],
+      security: [{ cookieAuth: [] }],
     },
     transform: jsonSchemaTransform,
   });

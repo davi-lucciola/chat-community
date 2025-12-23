@@ -8,7 +8,7 @@ import type { Request, Reply } from '@/lib/http';
 
 const userController = {
   getCurrentUser: async (app: FastifyInstance) => {
-    app.addHook('onRequest', authenticate);
+    app.addHook('preHandler', authenticate);
 
     app.get(
       '/user',
@@ -33,7 +33,7 @@ const userController = {
     );
   },
   update: async (app: FastifyInstance) => {
-    app.addHook('onRequest', authenticate);
+    app.addHook('preHandler', authenticate);
 
     app.put(
       '/user',

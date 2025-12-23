@@ -27,6 +27,13 @@ const authController = {
         const authService = new AuthService(app.jwt);
         const tokenPayload = await authService.login(request.body);
 
+        reply.setCookie(TOKEN_KEY, tokenPayload.accessToken, {
+          path: '/',
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+        });
+
         reply.send(tokenPayload);
       },
     );
