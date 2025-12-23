@@ -11,7 +11,7 @@ declare module '@fastify/jwt' {
 
 export const TOKEN_KEY = 'accessToken';
 
-export const authenticate = async (request: FastifyRequest, _: FastifyReply) => {
+export const authenticate = async (request: FastifyRequest, reply: FastifyReply) => {
   const token = request.cookies[TOKEN_KEY];
 
   if (!token) {
@@ -22,6 +22,7 @@ export const authenticate = async (request: FastifyRequest, _: FastifyReply) => 
     const user = request.jwt.verify<FastifyJWT['user']>(token);
     request.user = user;
   } catch (_) {
+    reply.clearCookie(TOKEN_KEY);
     throw new UnauthorizedError('Invalid token.');
   }
 };

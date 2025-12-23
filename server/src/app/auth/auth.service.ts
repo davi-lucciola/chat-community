@@ -2,6 +2,7 @@ import hash from '@/utils/hash';
 import type { JWT } from '@fastify/jwt';
 import { User } from '@/app/user/user.model';
 import { UnauthorizedError } from '@/lib/errors';
+import type { UserDTO } from '../user/user.schema';
 import type { LoginDTO, TokenDTO } from './auth.schema';
 
 export class AuthService {
@@ -24,11 +25,15 @@ export class AuthService {
       throw new UnauthorizedError('Invalid email or password.');
     }
 
-    const token = this.jwt.sign({
+    const userDto: UserDTO = {
       id: user.id,
       name: user.name,
       email: user.email,
       imageUrl: user.imageUrl ?? null,
+    };
+
+    const token = this.jwt.sign(userDto, {
+      expiresIn: 60 * 60 * 5, // 5 Hours
     });
 
     return {
