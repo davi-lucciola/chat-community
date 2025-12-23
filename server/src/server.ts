@@ -1,9 +1,37 @@
-import { createApp } from '@/app';
-import { getSettings } from '@/settings';
+import path from 'node:path';
+import Fastify from 'fastify';
+import mongoose from 'mongoose';
+import AutoLoad from '@fastify/autoload';
+import type { ZodTypeProvider } from 'fastify-type-provider-zod';
+import { validatorCompiler, serializerCompiler } from 'fastify-type-provider-zod';
+import routes from '@/routes';
+import { settings } from '@/settings';
+import { errorHandler } from '@/lib/errors';
+
+export const createApp = async () => {
+  const app = Fastify().withTypeProvider<ZodTypeProvider>();
+
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
+
+  // Plugins
+  await app.register(AutoLoad, {
+    dir: path.join(__dirname, 'plugins'),
+  });
+
+  // Routes
+  await routes.initRoutes(app);
+
+  app.setErrorHandler(errorHandler);
+
+  // Database
+  await mongoose.connect(settings.MONGODB_URL);
+
+  return app;
+};
 
 const main = async () => {
-  const settings = getSettings();
-  const app = await createApp(settings);
+  const app = await createApp();
   await app.listen({ port: 3333, host: '0.0.0.0' });
 };
 

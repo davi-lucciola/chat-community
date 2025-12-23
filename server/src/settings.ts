@@ -5,10 +5,9 @@ const settingsSchema = z.object({
   MONGODB_URL: z.string(),
 });
 
-export type Settings = z.infer<typeof settingsSchema>;
+export const settings = settingsSchema.parse({
+  JWT_SECRET: process.env.JWT_SECRET,
+  MONGODB_URL: process.env.MONGODB_URL,
+});
 
-export const getSettings = () =>
-  settingsSchema.parse({
-    JWT_SECRET: process.env.JWT_SECRET,
-    MONGODB_URL: process.env.MONGODB_URL,
-  });
+export type Settings = z.infer<typeof settingsSchema>;
