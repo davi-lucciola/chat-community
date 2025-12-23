@@ -11,10 +11,10 @@ const userController = {
     app.addHook('onRequest', authenticate);
 
     app.get(
-      '/users',
+      '/user',
       {
         schema: {
-          tags: ['Users'],
+          tags: ['User'],
           description: 'Get the current authenticated user.',
           response: {
             200: UserSchema,
@@ -22,10 +22,13 @@ const userController = {
           },
         },
       },
-      async (request: Request, _: Reply) => {
+      async (request: Request, reply: Reply) => {
         const userService = new UserService();
         const { id: userId } = request.user as UserDTO;
-        return await userService.findById(userId);
+
+        const user = await userService.findById(userId);
+
+        reply.send(user);
       },
     );
   },
@@ -33,10 +36,10 @@ const userController = {
     app.addHook('onRequest', authenticate);
 
     app.put(
-      '/users',
+      '/user',
       {
         schema: {
-          tags: ['Users'],
+          tags: ['User'],
           description: 'Update your own user.',
           body: SaveUserSchema,
           response: {
@@ -46,10 +49,13 @@ const userController = {
           },
         },
       },
-      async (request: Request<SaveUserDTO>, _: Reply) => {
+      async (request: Request<SaveUserDTO>, reply: Reply) => {
         const userService = new UserService();
         const { id: userId } = request.user as UserDTO;
-        return await userService.update(request.body, userId);
+
+        const user = await userService.update(request.body, userId);
+
+        reply.send(user);
       },
     );
   },

@@ -28,11 +28,13 @@ const communityController = {
           },
         },
       },
-      async (request: Request, _: Reply) => {
+      async (request: Request, reply: Reply) => {
         const user = request.user as UserDTO;
         const communityService = new CommunityService(user);
 
-        return await communityService.findAll();
+        const communities = await communityService.findAll();
+
+        reply.send(communities);
       },
     );
   },
@@ -53,13 +55,15 @@ const communityController = {
           },
         },
       },
-      async (request: ParamRequest<CommunityIdDTO>, _: Reply) => {
+      async (request: ParamRequest<CommunityIdDTO>, reply: Reply) => {
         const { id: communityId } = request.params;
 
         const user = request.user as UserDTO;
         const communityService = new CommunityService(user);
 
-        return await communityService.findById(communityId);
+        const community = await communityService.findById(communityId);
+
+        reply.send(community);
       },
     );
   },
@@ -80,10 +84,13 @@ const communityController = {
           },
         },
       },
-      async (request: Request<CreateCommunityDTO>, _: Reply) => {
+      async (request: Request<CreateCommunityDTO>, reply: Reply) => {
         const currentUser = request.user as UserDTO;
         const communityService = new CommunityService(currentUser);
-        return await communityService.create(request.body);
+
+        const community = await communityService.create(request.body);
+
+        reply.send(community);
       },
     );
   },
@@ -103,13 +110,15 @@ const communityController = {
           },
         },
       },
-      async (request: ParamRequest<CommunityIdDTO>, _: Reply) => {
+      async (request: ParamRequest<CommunityIdDTO>, reply: Reply) => {
         const { id: communityId } = request.params;
-        const currentUser = request.user as UserDTO;
 
+        const currentUser = request.user as UserDTO;
         const communityService = new CommunityService(currentUser);
+
         const community = await communityService.becomeMember(communityId);
-        return { message: `Welcome to ${community.title} ${currentUser.name}!` };
+
+        reply.send({ message: `Welcome to ${community.title} ${currentUser.name}!` });
       },
     );
   },
@@ -129,13 +138,14 @@ const communityController = {
           },
         },
       },
-      async (request: ParamRequest<CommunityIdDTO>, _: Reply) => {
+      async (request: ParamRequest<CommunityIdDTO>, reply: Reply) => {
         const { id: communityId } = request.params;
         const currentUser = request.user as UserDTO;
-
         const communityService = new CommunityService(currentUser);
+
         await communityService.stopBeingMember(communityId);
-        return { message: `It is sad, but you are welcome to come back!` };
+
+        reply.send({ message: `It is sad, but you are welcome to come back!` });
       },
     );
   },
