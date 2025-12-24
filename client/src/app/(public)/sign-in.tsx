@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Loader } from 'lucide-react';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -11,13 +12,12 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { toastStyles } from '@/components/ui/sonner';
-import authService from '@/services/auth.service';
-import { useEffect } from 'react';
 import { setUnauthorizedHandler } from '@/lib/api';
-import { useAuth } from '@/context/auth.context';
+import authService from '@/services/auth.service';
+import userService from '@/services/user.service';
 
-export const Route = createFileRoute('/sign-in')({
-  component: SignIn,
+export const Route = createFileRoute('/(public)/sign-in')({
+  component: SignInPage,
 });
 
 const signInSchema = z.object({
@@ -27,7 +27,7 @@ const signInSchema = z.object({
 
 export type SignInPayload = z.infer<typeof signInSchema>;
 
-function SignIn() {
+function SignInPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -50,11 +50,14 @@ function SignIn() {
   const onSubmit = async (payload: SignInPayload) => {
     await login(payload);
 
+    const user = await userService.getCurrentUser();
+    queryClient.setQueryData(['user'], user);
+
     navigate({ to: '/home' });
     toast.success('Authenticated successfully.', toastStyles.success);
-
-    await queryClient.refetchQueries({ queryKey: ['user'] });
   };
+
+  useEffect(() => setUnauthorizedHandler(undefined));
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center items-center gap-8">

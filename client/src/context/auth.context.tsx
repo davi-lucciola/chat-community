@@ -1,52 +1,45 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  createContext,
-  type PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext } from 'react';
 import { toast } from 'sonner';
 import { toastStyles } from '@/components/ui/sonner';
-import { setUnauthorizedHandler } from '@/lib/api';
 import userService from '@/services/user.service';
 import type { UserDTO } from '@/types/user';
 
-type AuthContextProps = {
+export type IAuthContext = {
   user?: UserDTO;
-  isPending: boolean;
+  isFechingUser: boolean;
+  unauthorizedHandler: (message: string) => void;
 };
 
-const AuthContext = createContext({} as AuthContextProps);
+const AuthContext = createContext({} as IAuthContext);
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: user, isPending } = useQuery({
+  const { data: user, isPending: isFechingUser } = useQuery({
     queryKey: ['user'],
     queryFn: userService.getCurrentUser,
     initialData: undefined,
     retry: false,
-    staleTime: Infinity,
   });
 
-  useEffect(() => {
-    setUnauthorizedHandler((message) => {
+  const unauthorizedHandler = useCallback(
+    (message: string) => {
       queryClient.clear();
       navigate({ to: '/sign-in' });
       toast.error(message, toastStyles.error);
-    });
-
-    return () => setUnauthorizedHandler(undefined);
-  }, [queryClient, navigate]);
+    },
+    [queryClient, navigate],
+  );
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isPending,
+        isFechingUser,
+        unauthorizedHandler,
       }}
     >
       {children}

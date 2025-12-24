@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Loader } from 'lucide-react';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -11,10 +12,11 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { toastStyles } from '@/components/ui/sonner';
+import { setUnauthorizedHandler } from '@/lib/api';
 import authService from '@/services/auth.service';
 
-export const Route = createFileRoute('/sign-up')({
-  component: SignUp,
+export const Route = createFileRoute('/(public)/sign-up')({
+  component: SignUpPage,
 });
 
 export const signUpSchema = z
@@ -33,7 +35,7 @@ export const signUpSchema = z
 
 export type SignUpPayload = z.infer<typeof signUpSchema>;
 
-function SignUp() {
+function SignUpPage() {
   const navigate = useNavigate();
 
   const { mutateAsync: createUser, isPending } = useMutation({
@@ -64,6 +66,8 @@ function SignUp() {
     toast.success('Usuário cadastrado com sucesso.', toastStyles.success);
     navigate({ to: '/sign-in' });
   };
+
+  useEffect(() => setUnauthorizedHandler(undefined));
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center items-center gap-8">
