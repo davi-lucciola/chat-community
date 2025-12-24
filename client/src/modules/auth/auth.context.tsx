@@ -3,8 +3,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { createContext, type PropsWithChildren, useCallback, useContext } from 'react';
 import { toast } from 'sonner';
 import { toastStyles } from '@/components/ui/sonner';
-import userService from '@/services/user.service';
-import type { UserDTO } from '@/types/user';
+import type { UserDTO } from '@/modules/user/user.schema';
+import userService from '@/modules/user/user.service';
 
 export type IAuthContext = {
   user?: UserDTO;
@@ -13,6 +13,10 @@ export type IAuthContext = {
 };
 
 const AuthContext = createContext({} as IAuthContext);
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate();
@@ -45,8 +49,4 @@ export function AuthProvider({ children }: PropsWithChildren) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

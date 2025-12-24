@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { useAuth } from '@/context/auth.context';
 import { setUnauthorizedHandler } from '@/lib/api';
+import { useAuth } from '@/modules/auth/auth.context';
 
 export const Route = createFileRoute('/(private)')({
   component: PrivateLayout,
