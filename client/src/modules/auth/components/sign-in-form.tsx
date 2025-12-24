@@ -9,7 +9,6 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input';
 import { toastStyles } from '@/components/ui/sonner';
 import authService from '@/modules/auth/auth.service';
-import userService from '@/modules/user/user.service';
 import { type SignInDTO, signInSchema } from '../auth.schema';
 
 export function SignInForm() {
@@ -35,8 +34,7 @@ export function SignInForm() {
   const onSubmit = async (payload: SignInDTO) => {
     await login(payload);
 
-    const user = await userService.getCurrentUser();
-    queryClient.setQueryData(['user'], { ...user });
+    await queryClient.refetchQueries({ queryKey: ['user'] });
 
     navigate({ to: '/home' });
     toast.success('Authenticated successfully.', toastStyles.success);

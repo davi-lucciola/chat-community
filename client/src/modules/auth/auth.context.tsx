@@ -31,7 +31,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const unauthorizedHandler = useCallback(
     (message: string) => {
-      queryClient.clear();
+      queryClient.setQueryData(['user'], undefined);
       navigate({ to: '/sign-in' });
       toast.error(message, toastStyles.error);
     },
