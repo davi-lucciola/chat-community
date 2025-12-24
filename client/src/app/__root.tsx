@@ -3,7 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import { AuthProvider } from '@/context/auth.context';
+import { AuthProvider } from '@/modules/auth/auth.context';
 
 const queryClient = new QueryClient();
 
