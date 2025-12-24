@@ -1,11 +1,5 @@
-import { API_URL, ApiError } from '@/lib/api';
-
-type UserDTO = {
-  id: string;
-  name: string;
-  email: string;
-  imageUrl?: string;
-};
+import { api } from '@/lib/api';
+import type { UserDTO } from '@/types/user';
 
 type LoginDTO = {
   email: string;
@@ -24,37 +18,13 @@ type CreateUserDTO = {
 };
 
 async function login(loginDTO: LoginDTO): Promise<TokenDTO> {
-  const res = await fetch(`${API_URL}/sign-in`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(loginDTO),
-  });
-
-  if (!res.ok) {
-    const body = await res.json();
-    throw new ApiError(body.message);
-  }
-
-  return res.json();
+  const res = await api.post<TokenDTO>('/sign-in', loginDTO);
+  return res.data;
 }
 
 async function createUser(userDTO: CreateUserDTO): Promise<UserDTO> {
-  const res = await fetch(`${API_URL}/sign-up`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userDTO),
-  });
-
-  if (!res.ok) {
-    const body = await res.json();
-    throw new ApiError(body.message);
-  }
-
-  return res.json();
+  const res = await api.post<UserDTO>('/sign-up', userDTO);
+  return res.data;
 }
 
 export default {

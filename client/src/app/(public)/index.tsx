@@ -5,11 +5,11 @@ import { ThemeToogle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-export const Route = createFileRoute('/')({
-  component: Index,
+export const Route = createFileRoute('/(public)/')({
+  component: IndexPage,
 });
 
-function Index() {
+function IndexPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
