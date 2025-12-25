@@ -7,6 +7,7 @@ import { MessageSchema } from '@/lib/schemas';
 import type { Request, Reply } from '@/lib/http';
 import { UserService } from '../user/user.service';
 import { TOKEN_KEY, authenticate } from '@/lib/auth';
+import { settings } from '@/settings';
 
 const authController = {
   signIn: async (app: FastifyInstance) => {
@@ -30,7 +31,7 @@ const authController = {
         reply.setCookie(TOKEN_KEY, tokenPayload.accessToken, {
           path: '/',
           httpOnly: true,
-          secure: false,
+          secure: settings.IS_PROD,
           sameSite: 'lax',
         });
 
