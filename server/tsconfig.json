@@ -3,16 +3,18 @@
   "display": "Node 22",
   "_version": "22.0.0",
   "compilerOptions": {
-    "lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "outDir": "dist",
     "module": "node16",
     "target": "es2022",
+    "lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
   },
   "include": ["src"]
 }

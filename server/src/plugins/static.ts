@@ -4,7 +4,7 @@ import { settings } from '@/settings';
 
 const staticPlugin = fp((app, _, done) => {
   const staticPath = settings.IS_PROD ? 
-    path.join(__dirname, 'dist') : 
+    path.join(__dirname, '..', 'dist') : 
     path.join(__dirname, '..', '..', '..', 'client', 'dist');
   
   app.register(import('@fastify/static'), {
