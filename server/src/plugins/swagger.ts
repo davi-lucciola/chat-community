@@ -26,7 +26,7 @@ const swaggerPlugin = fp((app, _, done) => {
   });
 
   app.register(import('@scalar/fastify-api-reference'), {
-    routePrefix: '/docs',
+    routePrefix: '/api/docs',
   });
 
   done();

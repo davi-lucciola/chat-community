@@ -1,4 +1,15 @@
 services:
+  app:
+    container_name: chat-community-app
+    build:
+      context: .
+    ports:
+      - 3333:3333
+    environment:
+      IS_PROD: true
+      JWT_SECRET: supersecretkey
+      MONGODB_URL: mongodb://db:27017/chat-community
+
   db:
     image: mongo:latest
     container_name: chat-community-db

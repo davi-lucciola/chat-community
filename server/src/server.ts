@@ -21,11 +21,11 @@ export const createApp = async () => {
     dir: path.join(__dirname, 'plugins'),
   });
 
-  // Routes
-  await routes.initRoutes(app);
-
   // Database
   await mongoose.connect(settings.MONGODB_URL);
+
+  // Routes
+  await app.register(routes.initRoutes, { prefix: '/api/' });
 
   return app;
 };
@@ -38,7 +38,7 @@ const main = async () => {
 main()
   .then(() => {
     console.log('🔥 Server is running at http://localhost:3333');
-    console.log('You can access the documentation at http://localhost:3333/docs');
+    console.log('You can access the documentation at http://localhost:3333/api/docs');
   })
   .catch((err) => {
     console.error(err);
