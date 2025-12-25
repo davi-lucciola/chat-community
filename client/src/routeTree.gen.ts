@@ -15,6 +15,7 @@ import { Route as publicSignUpRouteImport } from './app/(public)/sign-up'
 import { Route as publicSignInRouteImport } from './app/(public)/sign-in'
 import { Route as publicAboutRouteImport } from './app/(public)/about'
 import { Route as privateHomeRouteImport } from './app/(private)/home'
+import { Route as privateCommunityCommunityIdChatRouteImport } from './app/(private)/community/$communityId/chat'
 
 const privateRouteRoute = privateRouteRouteImport.update({
   id: '/(private)',
@@ -45,6 +46,12 @@ const privateHomeRoute = privateHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => privateRouteRoute,
 } as any)
+const privateCommunityCommunityIdChatRoute =
+  privateCommunityCommunityIdChatRouteImport.update({
+    id: '/community/$communityId/chat',
+    path: '/community/$communityId/chat',
+    getParentRoute: () => privateRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/home': typeof privateHomeRoute
@@ -52,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof publicSignInRoute
   '/sign-up': typeof publicSignUpRoute
   '/': typeof publicIndexRoute
+  '/community/$communityId/chat': typeof privateCommunityCommunityIdChatRoute
 }
 export interface FileRoutesByTo {
   '/home': typeof privateHomeRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof publicSignInRoute
   '/sign-up': typeof publicSignUpRoute
   '/': typeof publicIndexRoute
+  '/community/$communityId/chat': typeof privateCommunityCommunityIdChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +77,25 @@ export interface FileRoutesById {
   '/(public)/sign-in': typeof publicSignInRoute
   '/(public)/sign-up': typeof publicSignUpRoute
   '/(public)/': typeof publicIndexRoute
+  '/(private)/community/$communityId/chat': typeof privateCommunityCommunityIdChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/home' | '/about' | '/sign-in' | '/sign-up' | '/'
+  fullPaths:
+    | '/home'
+    | '/about'
+    | '/sign-in'
+    | '/sign-up'
+    | '/'
+    | '/community/$communityId/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/home' | '/about' | '/sign-in' | '/sign-up' | '/'
+  to:
+    | '/home'
+    | '/about'
+    | '/sign-in'
+    | '/sign-up'
+    | '/'
+    | '/community/$communityId/chat'
   id:
     | '__root__'
     | '/(private)'
@@ -82,6 +104,7 @@ export interface FileRouteTypes {
     | '/(public)/sign-in'
     | '/(public)/sign-up'
     | '/(public)/'
+    | '/(private)/community/$communityId/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,15 +159,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof privateHomeRouteImport
       parentRoute: typeof privateRouteRoute
     }
+    '/(private)/community/$communityId/chat': {
+      id: '/(private)/community/$communityId/chat'
+      path: '/community/$communityId/chat'
+      fullPath: '/community/$communityId/chat'
+      preLoaderRoute: typeof privateCommunityCommunityIdChatRouteImport
+      parentRoute: typeof privateRouteRoute
+    }
   }
 }
 
 interface privateRouteRouteChildren {
   privateHomeRoute: typeof privateHomeRoute
+  privateCommunityCommunityIdChatRoute: typeof privateCommunityCommunityIdChatRoute
 }
 
 const privateRouteRouteChildren: privateRouteRouteChildren = {
   privateHomeRoute: privateHomeRoute,
+  privateCommunityCommunityIdChatRoute: privateCommunityCommunityIdChatRoute,
 }
 
 const privateRouteRouteWithChildren = privateRouteRoute._addFileChildren(
