@@ -53,20 +53,24 @@ function IndexPage() {
             in conversations that matter. Your community awaits.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 h-14"
-            >
-              Get Started
-              <ArrowRight className="ml-2 size-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-border text-foreground text-lg px-8 h-14 bg-transparent"
-            >
-              Explore Communities
-            </Button>
+            <Link to="/communities">
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 h-14 hover:cursor-pointer"
+              >
+                Get Started
+                <ArrowRight className="ml-2 size-5" />
+              </Button>
+            </Link>
+            <Link to="/communities" search={{ explore: true }}>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-border text-foreground text-lg px-8 h-14 bg-transparent hover:cursor-pointer"
+              >
+                Explore Communities
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
