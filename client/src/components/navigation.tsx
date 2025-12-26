@@ -1,15 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/modules/auth/auth.context';
 import { UserAvatar } from '@/modules/user/components/user-avatar';
 import { ChatCommunityLogo } from './logo';
+import { ThemeToogle } from './theme/theme-toggle';
 
 type NavigationHeaderProps = React.ComponentProps<'nav'>;
 
 export function NavigationHeader({ className, ...props }: NavigationHeaderProps) {
-  const { user } = useAuth();
-
   return (
     <nav
       {...props}
@@ -20,17 +18,17 @@ export function NavigationHeader({ className, ...props }: NavigationHeaderProps)
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/communities" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <ChatCommunityLogo />
           </Link>
           <div className="flex items-center gap-4">
-            <Link to="/">
-              <Button variant="ghost">Home</Button>
-            </Link>
             <Link to="/communities">
-              <Button variant="ghost">Communities</Button>
+              <Button variant="ghost" className="hover:cursor-pointer">
+                Home
+              </Button>
             </Link>
-            <UserAvatar user={user} />
+            <ThemeToogle />
+            <UserAvatar />
           </div>
         </div>
       </div>

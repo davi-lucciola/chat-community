@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Plus, Search, TrendingUp, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { NavigationHeader } from '@/components/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useOverflowY } from '@/components/use-overflow-y';
 
 // Mock data for communities
 const mockMyCommunities = [
@@ -109,13 +108,7 @@ export const Route = createFileRoute('/(private)/communities')({
 });
 
 function CommunitiesPage() {
-  useOverflowY();
-
   const { explore, search } = Route.useSearch();
-
-  console.log(search);
-  console.log(explore);
-
   const [searchQuery, setSearchQuery] = useState(search ?? '');
 
   const filteredMyCommunities = mockMyCommunities.filter(
@@ -130,9 +123,16 @@ function CommunitiesPage() {
       community.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  useEffect(() => {
+    const html = document.documentElement;
+    html.classList.add('overflow-y-scroll');
+
+    return () => html.classList.remove('overflow-y-scroll');
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background">
-      <NavigationHeader className="sticky top-0" />
+    <div className="min-h-screen flex flex-col bg-background">
+      <NavigationHeader />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -188,36 +188,38 @@ function CommunitiesPage() {
                     to="/community/$communityId/chat"
                     params={{ communityId: community.id }}
                   >
-                    <Card className="p-6 hover:bg-card/80 transition-colors cursor-pointer h-full">
-                      <div className="flex items-start gap-4 mb-4">
-                        <Avatar className="size-16 rounded-lg">
-                          <AvatarImage src={community.image || '/placeholder.svg'} />
-                          <AvatarFallback className="rounded-lg">
-                            {community.name[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-lg text-card-foreground truncate">
-                              {community.name}
-                            </h3>
-                            {community.unread > 0 && (
-                              <Badge
-                                variant="default"
-                                className="bg-primary text-primary-foreground"
-                              >
-                                {community.unread}
-                              </Badge>
-                            )}
+                    <Card className="p-6 hover:bg-card/80 transition-colors cursor-pointer h-full flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-start gap-4 mb-10">
+                          <Avatar className="size-16 rounded-lg">
+                            <AvatarImage src={community.image || '/placeholder.svg'} />
+                            <AvatarFallback className="rounded-lg">
+                              {community.name[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold text-lg text-card-foreground truncate">
+                                {community.name}
+                              </h3>
+                              {community.unread > 0 && (
+                                <Badge
+                                  variant="default"
+                                  className="bg-primary text-primary-foreground"
+                                >
+                                  {community.unread}
+                                </Badge>
+                              )}
+                            </div>
+                            <Badge variant="secondary" className="text-xs">
+                              {community.category}
+                            </Badge>
                           </div>
-                          <Badge variant="secondary" className="text-xs">
-                            {community.category}
-                          </Badge>
                         </div>
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                          {community.description}
+                        </p>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                        {community.description}
-                      </p>
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Users className="size-4" />

@@ -176,7 +176,6 @@ function CommunityChatPage() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Top Navigation */}
       <NavigationHeader />
       <div className="container m-auto flex-1 flex overflow-hidden min-h-0">
         {/* Main Chat Area */}
@@ -252,7 +251,7 @@ function CommunityChatPage() {
                         handleSendMessage();
                       }
                     }}
-                    className="pr-20 min-h-[44px] resize-none"
+                    className="pr-20 min-h-11 resize-none"
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                     <Button variant="ghost" size="icon" className="size-8">

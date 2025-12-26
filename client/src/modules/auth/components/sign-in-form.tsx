@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { Loader } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -13,7 +13,6 @@ import { type SignInDTO, signInSchema } from '../auth.schema';
 
 export function SignInForm() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const { mutateAsync: login, isPending } = useMutation({
     mutationKey: ['auth', 'sign-in'],
@@ -34,9 +33,7 @@ export function SignInForm() {
   const onSubmit = async (payload: SignInDTO) => {
     await login(payload);
 
-    await queryClient.refetchQueries({ queryKey: ['user'] });
-
-    navigate({ to: '/home' });
+    navigate({ to: '/communities' });
     toast.success('Authenticated successfully.', toastStyles.success);
   };
 
