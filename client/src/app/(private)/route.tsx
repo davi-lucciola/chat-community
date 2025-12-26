@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { setUnauthorizedHandler } from '@/lib/api';
@@ -8,12 +9,15 @@ export const Route = createFileRoute('/(private)')({
 });
 
 function PrivateLayout() {
+  const queryClient = useQueryClient();
   const { unauthorizedHandler } = useAuth();
 
   useEffect(() => {
     setUnauthorizedHandler(unauthorizedHandler);
+    queryClient.refetchQueries({ queryKey: ['user'] });
+
     return () => setUnauthorizedHandler(undefined);
-  }, [unauthorizedHandler]);
+  }, [unauthorizedHandler, queryClient]);
 
   return <Outlet />;
 }
