@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Loader2, MessageCircle, Plus, Search, TrendingUp, Users } from 'lucide-react';
+import { Plus, Search, TrendingUp, Users } from 'lucide-react';
 import { useState } from 'react';
+import { z } from 'zod';
+import { NavigationHeader } from '@/components/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,7 +10,6 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useOverflowY } from '@/components/use-overflow-y';
-import { useAuth } from '@/modules/auth/auth.context';
 
 // Mock data for communities
 const mockMyCommunities = [
@@ -97,19 +98,25 @@ const mockDiscoverCommunities = [
   },
 ];
 
-export const Route = createFileRoute('/(private)/home')({
-  component: HomePage,
+const communitiesParamsSchema = z.object({
+  search: z.string().optional().catch(''),
+  explore: z.coerce.boolean().optional().catch(false),
 });
 
-function HomePage() {
+export const Route = createFileRoute('/(private)/communities')({
+  component: CommunitiesPage,
+  validateSearch: (search) => communitiesParamsSchema.parse(search),
+});
+
+function CommunitiesPage() {
   useOverflowY();
 
-  const { user, isFechingUser } = useAuth();
-  const [searchQuery, setSearchQuery] = useState('');
+  const { explore, search } = Route.useSearch();
 
-  if (isFechingUser || !user) {
-    return <Loader2 className="w-16 h-16 animate-spin" />;
-  }
+  console.log(search);
+  console.log(explore);
+
+  const [searchQuery, setSearchQuery] = useState(search ?? '');
 
   const filteredMyCommunities = mockMyCommunities.filter(
     (community) =>
@@ -125,31 +132,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-2">
-              <MessageCircle className="size-8 text-primary" />
-              <span className="text-xl font-bold text-foreground">Chat Community</span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link to="/">
-                <Button variant="ghost">Home</Button>
-              </Link>
-              {/* <Link to="/communities"> */}
-              <Link to="/home">
-                <Button variant="ghost">Communities</Button>
-              </Link>
-              <Avatar className="size-10">
-                <AvatarImage src="/diverse-user-avatars.png" />
-                <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+      <NavigationHeader className="sticky top-0" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -178,10 +161,10 @@ function HomePage() {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="my-communities" className="w-full">
+        <Tabs defaultValue={explore ? 'explore' : 'my-communities'} className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="my-communities">My Communities</TabsTrigger>
-            <TabsTrigger value="discover">Discover</TabsTrigger>
+            <TabsTrigger value="explore">Explore</TabsTrigger>
           </TabsList>
 
           {/* My Communities Tab */}
@@ -253,7 +236,7 @@ function HomePage() {
           </TabsContent>
 
           {/* Discover Tab */}
-          <TabsContent value="discover" className="space-y-4">
+          <TabsContent value="explore" className="space-y-4">
             {filteredDiscoverCommunities.length === 0 ? (
               <Card className="p-12 text-center">
                 <Search className="size-12 text-muted-foreground mx-auto mb-4" />
