@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { UserBasicSchema } from '../user/user.schema';
 
 export const CommunityIdSchema = z.object({
   id: z.string(),
@@ -8,12 +7,18 @@ export const CommunityIdSchema = z.object({
 export const CommunitySchema = z.object({
   id: z.string(),
   title: z.string(),
-  owner: UserBasicSchema,
+  userId: z.string(),
   description: z.string().nullable(),
+  onlineMembers: z.number(),
   membersQuantity: z.number(),
 });
 
 export const CommunitiesSchema = z.array(CommunitySchema);
+
+export const CommunitiesQuerySchema = z.object({
+  search: z.string().optional(),
+  isMember: z.stringbool().optional(),
+});
 
 export const CreateCommunitySchema = z.object({
   title: z.string({ error: 'Title must be a string.' }),
@@ -23,3 +28,4 @@ export const CreateCommunitySchema = z.object({
 export type CommunityDTO = z.infer<typeof CommunitySchema>;
 export type CommunityIdDTO = z.infer<typeof CommunityIdSchema>;
 export type CreateCommunityDTO = z.infer<typeof CreateCommunitySchema>;
+export type CommunitiesQueryDTO = z.infer<typeof CommunitiesQuerySchema>;
