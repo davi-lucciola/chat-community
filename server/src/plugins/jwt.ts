@@ -1,6 +1,6 @@
+import type { JWT } from '@fastify/jwt';
 import fp from 'fastify-plugin';
 import { settings } from '@/settings';
-import type { JWT } from '@fastify/jwt';
 
 declare module 'fastify' {
   interface FastifyRequest {

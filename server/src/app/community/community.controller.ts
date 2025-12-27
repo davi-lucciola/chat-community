@@ -1,20 +1,20 @@
 import type { FastifyInstance } from 'fastify';
-import type { ParamRequest, Request, Reply, QueryRequest } from '@/lib/http';
 import type { UserDTO } from '@/app/user/user.schema';
+import { authenticate } from '@/lib/auth';
+import type { ParamRequest, QueryRequest, Reply, Request } from '@/lib/http';
+import { MessageSchema } from '@/lib/schemas';
 import type {
-  CreateCommunityDTO,
-  CommunityIdDTO,
   CommunitiesQueryDTO,
+  CommunityIdDTO,
+  CreateCommunityDTO,
 } from './community.schema';
 import {
-  CommunitiesSchema,
-  CommunitySchema,
-  CommunityIdSchema,
-  CreateCommunitySchema,
   CommunitiesQuerySchema,
+  CommunitiesSchema,
+  CommunityIdSchema,
+  CommunitySchema,
+  CreateCommunitySchema,
 } from './community.schema';
-import { authenticate } from '@/lib/auth';
-import { MessageSchema } from '@/lib/schemas';
 import { CommunityService } from './community.service';
 
 const communityController = {

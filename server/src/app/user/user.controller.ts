@@ -1,10 +1,10 @@
 import type { FastifyInstance } from 'fastify';
 import { authenticate } from '@/lib/auth';
-import { UserService } from './user.service';
-import type { SaveUserDTO, UserDTO } from './user.schema';
-import { UserSchema, SaveUserSchema } from './user.schema';
+import type { Reply, Request } from '@/lib/http';
 import { MessageSchema } from '@/lib/schemas';
-import type { Request, Reply } from '@/lib/http';
+import type { SaveUserDTO, UserDTO } from './user.schema';
+import { SaveUserSchema, UserSchema } from './user.schema';
+import { UserService } from './user.service';
 
 const userController = {
   getCurrentUser: async (app: FastifyInstance) => {

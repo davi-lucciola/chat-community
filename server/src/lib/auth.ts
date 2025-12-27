@@ -1,7 +1,7 @@
-import { UnauthorizedError } from '@/lib/errors';
 import type { FastifyJWT } from '@fastify/jwt';
-import type { UserDTO } from '@/app/user/user.schema';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { UserDTO } from '@/app/user/user.schema';
+import { UnauthorizedError } from '@/lib/errors';
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {

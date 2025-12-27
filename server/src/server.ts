@@ -1,12 +1,12 @@
 import path from 'node:path';
-import Fastify from 'fastify';
-import mongoose from 'mongoose';
 import AutoLoad from '@fastify/autoload';
+import Fastify from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
-import { validatorCompiler, serializerCompiler } from 'fastify-type-provider-zod';
+import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import mongoose from 'mongoose';
+import { errorHandler } from '@/lib/errors';
 import routes from '@/routes';
 import { settings } from '@/settings';
-import { errorHandler } from '@/lib/errors';
 
 export const createApp = async () => {
   const app = Fastify().withTypeProvider<ZodTypeProvider>();

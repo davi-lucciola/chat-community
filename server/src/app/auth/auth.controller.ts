@@ -1,13 +1,13 @@
 import type { FastifyInstance } from 'fastify';
-import { LoginSchema, TokenSchema, type LoginDTO } from './auth.schema';
-import type { SaveUserDTO } from '../user/user.schema';
-import { UserSchema, SaveUserSchema } from '../user/user.schema';
-import { AuthService } from './auth.service';
+import { authenticate, TOKEN_KEY } from '@/lib/auth';
+import type { Reply, Request } from '@/lib/http';
 import { MessageSchema } from '@/lib/schemas';
-import type { Request, Reply } from '@/lib/http';
-import { UserService } from '../user/user.service';
-import { TOKEN_KEY, authenticate } from '@/lib/auth';
 import { settings } from '@/settings';
+import type { SaveUserDTO } from '../user/user.schema';
+import { SaveUserSchema, UserSchema } from '../user/user.schema';
+import { UserService } from '../user/user.service';
+import { type LoginDTO, LoginSchema, TokenSchema } from './auth.schema';
+import { AuthService } from './auth.service';
 
 const authController = {
   signIn: async (app: FastifyInstance) => {

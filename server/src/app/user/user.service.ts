@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
+import { DomainError, NotFoundError, UnauthorizedError } from '@/lib/errors';
 import hash from '@/utils/hash';
 import { User } from './user.model';
 import type { SaveUserDTO, UserDTO } from './user.schema';
-import { DomainError, NotFoundError, UnauthorizedError } from '@/lib/errors';
 
 export class UserService {
   async findById(userId: string): Promise<UserDTO> {

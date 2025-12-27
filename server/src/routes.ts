@@ -1,8 +1,7 @@
 import type { FastifyInstance } from 'fastify';
-
-import { userRoutes } from '@/app/user/user.routes';
 import { authRoutes } from '@/app/auth/auth.routes';
 import { communityRoutes } from '@/app/community/community.routes';
+import { userRoutes } from '@/app/user/user.routes';
 
 const initRoutes = async (app: FastifyInstance) => {
   app.get('/health', async (_, reply) => {

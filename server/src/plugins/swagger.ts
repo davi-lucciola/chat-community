@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
-import { TOKEN_KEY } from '@/lib/auth';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
+import { TOKEN_KEY } from '@/lib/auth';
 
 const swaggerPlugin = fp((app, _, done) => {
   app.register(import('@fastify/swagger'), {
