@@ -25,17 +25,17 @@ const communityDocument = new mongoose.Schema({
     type: String,
     required: false,
   },
+  totalMembers: {
+    type: Number,
+    min: 1,
+    required: true,
+    default: 1,
+  },
   onlineMembers: {
     type: Number,
     min: 0,
     required: true,
     default: 0,
-  },
-  membersQuantity: {
-    type: Number,
-    min: 1,
-    required: true,
-    default: 1,
   },
 });
 

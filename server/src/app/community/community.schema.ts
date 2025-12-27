@@ -9,8 +9,8 @@ export const CommunitySchema = z.object({
   title: z.string(),
   userId: z.string(),
   description: z.string().nullable(),
+  totalMembers: z.number(),
   onlineMembers: z.number(),
-  membersQuantity: z.number(),
 });
 
 export const CommunitiesSchema = z.array(CommunitySchema);

@@ -53,7 +53,7 @@ export class CommunityService {
       });
 
       pipeline.push({
-        $project: { membership: false, isMember: false },
+        $project: { membership: false },
       });
     }
 
@@ -143,7 +143,7 @@ export class CommunityService {
         communityId: community._id,
       });
 
-      community.membersQuantity += 1;
+      community.totalMembers += 1;
       await community.save();
     }
 
@@ -180,7 +180,7 @@ export class CommunityService {
         'user.id': userId,
       });
 
-      community.membersQuantity -= 1;
+      community.totalMembers -= 1;
       await community.save();
     }
 
@@ -197,8 +197,8 @@ export class CommunityService {
       title: community.title,
       userId: community.userId.toString(),
       description: community.description ?? null,
+      totalMembers: community.totalMembers,
       onlineMembers: community.onlineMembers,
-      membersQuantity: community.membersQuantity,
     };
   }
 }
