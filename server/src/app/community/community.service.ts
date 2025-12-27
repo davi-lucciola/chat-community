@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { DomainError, NotFoundError } from '@/lib/errors';
-import { Community, CommunityMember } from './community.model';
 import type { UserDTO } from '../user/user.schema';
+import { Community, type CommunityDocument, CommunityMember } from './community.model';
 import type {
   CommunitiesQueryDTO,
   CommunityDTO,
@@ -62,7 +62,7 @@ export class CommunityService {
       return communities.map(this.communityToDto);
     }
 
-    const communities = await Community.aggregate(pipeline);
+    const communities = await Community.aggregate<CommunityDocument>(pipeline);
     return communities.map(this.communityToDto);
   }
 
@@ -191,7 +191,7 @@ export class CommunityService {
     return mongoose.Types.ObjectId.isValid(communityId);
   }
 
-  private communityToDto(community: InstanceType<typeof Community>): CommunityDTO {
+  private communityToDto(community: CommunityDocument): CommunityDTO {
     return {
       id: community._id.toString(),
       title: community.title,

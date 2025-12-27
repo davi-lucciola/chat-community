@@ -1,5 +1,5 @@
-import { settings } from '@/settings';
 import fp from 'fastify-plugin';
+import { settings } from '@/settings';
 
 const corsPlugin = fp((app, _, done) => {
   const developmentOrigin = 'http://localhost:5173';

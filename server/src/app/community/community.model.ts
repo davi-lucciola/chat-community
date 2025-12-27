@@ -40,6 +40,8 @@ const communityDocument = new mongoose.Schema({
 });
 
 export const Community = mongoose.model('Community', communityDocument);
+export type CommunityDocument = InstanceType<typeof Community>;
+
 export const CommunityMember = mongoose.model(
   'Community_Member',
   communityMemberDocument,
