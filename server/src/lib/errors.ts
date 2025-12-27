@@ -18,6 +18,7 @@ export const errorHandler = (
   } else {
     // biome-ignore lint/suspicious/noExplicitAny: zod validation error
     const errorAny = error as any;
+    console.error(errorAny);
     reply.code(500).send({
       message:
         errorAny.code === 'FST_ERR_VALIDATION'

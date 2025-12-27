@@ -17,13 +17,19 @@ const communityDocument = new mongoose.Schema({
     type: String,
     required: true,
   },
-  owner: {
-    type: basicUserDocument,
+  userId: {
+    type: mongoose.Types.ObjectId,
     required: true,
   },
   description: {
     type: String,
     required: false,
+  },
+  onlineMembers: {
+    type: Number,
+    min: 0,
+    required: true,
+    default: 0,
   },
   membersQuantity: {
     type: Number,

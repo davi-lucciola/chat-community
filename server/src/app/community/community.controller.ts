@@ -1,12 +1,17 @@
 import type { FastifyInstance } from 'fastify';
-import type { ParamRequest, Request, Reply } from '@/lib/http';
+import type { ParamRequest, Request, Reply, QueryRequest } from '@/lib/http';
 import type { UserDTO } from '@/app/user/user.schema';
-import type { CreateCommunityDTO, CommunityIdDTO } from './community.schema';
+import type {
+  CreateCommunityDTO,
+  CommunityIdDTO,
+  CommunitiesQueryDTO,
+} from './community.schema';
 import {
   CommunitiesSchema,
   CommunitySchema,
   CommunityIdSchema,
   CreateCommunitySchema,
+  CommunitiesQuerySchema,
 } from './community.schema';
 import { authenticate } from '@/lib/auth';
 import { MessageSchema } from '@/lib/schemas';
@@ -22,17 +27,19 @@ const communityController = {
         schema: {
           tags: ['Community'],
           description: 'Get all communities.',
+          querystring: CommunitiesQuerySchema,
           response: {
             200: CommunitiesSchema,
             401: MessageSchema,
           },
         },
       },
-      async (request: Request, reply: Reply) => {
+      async (request: QueryRequest<CommunitiesQueryDTO>, reply: Reply) => {
         const user = request.user as UserDTO;
         const communityService = new CommunityService(user);
 
-        const communities = await communityService.findAll();
+        const query = request.query;
+        const communities = await communityService.findAll(query);
 
         reply.send(communities);
       },

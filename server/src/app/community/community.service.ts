@@ -2,13 +2,67 @@ import mongoose from 'mongoose';
 import { DomainError, NotFoundError } from '@/lib/errors';
 import { Community, CommunityMember } from './community.model';
 import type { UserDTO } from '../user/user.schema';
-import type { CommunityDTO, CreateCommunityDTO } from './community.schema';
+import type {
+  CommunitiesQueryDTO,
+  CommunityDTO,
+  CreateCommunityDTO,
+} from './community.schema';
 
 export class CommunityService {
   constructor(private readonly currentUser: UserDTO) {}
 
-  async findAll(): Promise<CommunityDTO[]> {
-    const communities = await Community.find();
+  async findAll(query: CommunitiesQueryDTO): Promise<CommunityDTO[]> {
+    const pipeline: mongoose.PipelineStage[] = [];
+
+    if (query.search) {
+      pipeline.push({
+        $match: {
+          title: { $regex: query.search, $options: 'i' },
+        },
+      });
+    }
+
+    if (query.isMember !== undefined) {
+      pipeline.push({
+        $lookup: {
+          from: 'community_members',
+          localField: '_id',
+          foreignField: 'communityId',
+          pipeline: [
+            {
+              $match: {
+                $and: [{ 'user.id': new mongoose.Types.ObjectId(this.currentUser.id) }],
+              },
+            },
+            { $limit: 1 },
+          ],
+          as: 'membership',
+        },
+      });
+
+      pipeline.push({
+        $addFields: {
+          isMember: { $gt: [{ $size: '$membership' }, 0] },
+        },
+      });
+
+      pipeline.push({
+        $match: {
+          $and: [{ isMember: query.isMember }],
+        },
+      });
+
+      pipeline.push({
+        $project: { membership: false, isMember: false },
+      });
+    }
+
+    if (pipeline.length === 0) {
+      const communities = await Community.find();
+      return communities.map(this.communityToDto);
+    }
+
+    const communities = await Community.aggregate(pipeline);
     return communities.map(this.communityToDto);
   }
 
@@ -48,7 +102,7 @@ export class CommunityService {
     const community = await Community.create({
       title,
       description,
-      owner: user,
+      userId: user.id,
     });
 
     await CommunityMember.create({
@@ -111,7 +165,7 @@ export class CommunityService {
 
     const userId = new mongoose.Types.ObjectId(this.currentUser.id);
 
-    if (community.owner.id.toString() === userId.toString()) {
+    if (community.userId.toString() === userId.toString()) {
       throw new DomainError('You cannot stop being a member of your own community.');
     }
 
@@ -139,14 +193,11 @@ export class CommunityService {
 
   private communityToDto(community: InstanceType<typeof Community>): CommunityDTO {
     return {
-      id: community.id.toString(),
+      id: community._id.toString(),
       title: community.title,
-      owner: {
-        id: community.owner.id.toString(),
-        name: community.owner.name,
-        imageUrl: community.owner.imageUrl,
-      },
+      userId: community.userId.toString(),
       description: community.description ?? null,
+      onlineMembers: community.onlineMembers,
       membersQuantity: community.membersQuantity,
     };
   }

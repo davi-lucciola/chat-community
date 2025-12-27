@@ -27,6 +27,12 @@ const swaggerPlugin = fp((app, _, done) => {
 
   app.register(import('@scalar/fastify-api-reference'), {
     routePrefix: '/api/docs',
+    configuration: {
+      favicon: '/favicon.svg',
+      metaData: {
+        title: 'Chat Community API - Docs',
+      },
+    },
   });
 
   done();
