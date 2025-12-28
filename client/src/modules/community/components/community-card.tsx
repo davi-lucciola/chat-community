@@ -33,9 +33,9 @@ export function CommunityCard({ community, joinButton = false }: CommunityCardPr
         </div>
       </div>
       <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-        {community.description}
+        {community.description != null ? community.description : '<No description>'}
       </p>
-      <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
         <div className="flex items-center gap-1">
           <Users className="size-4" />
           <span>{community.totalMembers.toLocaleString()} members</span>
@@ -47,7 +47,7 @@ export function CommunityCard({ community, joinButton = false }: CommunityCardPr
       </div>
 
       {joinButton && (
-        <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+        <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:cursor-pointer">
           Join Community
         </Button>
       )}

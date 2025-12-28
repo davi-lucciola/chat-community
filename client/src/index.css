@@ -186,3 +186,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+html body#content {
+  /* biome-ignore lint/complexity/noImportantStyles: removing margin right from radix ui */
+  margin-right: 0 !important;
+}
