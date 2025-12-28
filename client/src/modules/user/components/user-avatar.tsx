@@ -34,7 +34,7 @@ export function UserAvatar() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="size-10 hover:cursor-pointer">
-          <AvatarImage src={user.imageUrl} />
+          <AvatarImage src={user.imageUrl ?? undefined} />
           <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

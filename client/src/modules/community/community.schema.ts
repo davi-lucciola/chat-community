@@ -6,11 +6,11 @@ export type CommunitiesQuery = {
 };
 
 export type CommunityDTO = {
-  id: string;
+  _id: string;
   title: string;
   userId: string;
   imageUrl?: string;
-  isMember?: boolean;
+  isMember: boolean | null;
   description: string | null;
   totalMembers: number;
   onlineMembers: number;

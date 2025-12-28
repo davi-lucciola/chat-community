@@ -7,12 +7,11 @@ import type { CommunityDTO } from '../community.schema';
 
 type CommunityCardProps = {
   community: CommunityDTO;
-  joinButton?: boolean;
 };
 
-export function CommunityCard({ community, joinButton = false }: CommunityCardProps) {
+export function CommunityCard({ community }: CommunityCardProps) {
   return (
-    <Card key={community.id} className="p-6 hover:bg-card/80 transition-colors h-full">
+    <Card key={community._id} className="p-6 hover:bg-card/80 transition-colors h-full">
       <div className="flex items-start gap-4 mb-4">
         <Avatar className="size-16 rounded-lg">
           <AvatarImage src={community.imageUrl || '/placeholder.svg'} />
@@ -46,7 +45,7 @@ export function CommunityCard({ community, joinButton = false }: CommunityCardPr
         </div>
       </div>
 
-      {joinButton && (
+      {community.isMember && (
         <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:cursor-pointer">
           Join Community
         </Button>
