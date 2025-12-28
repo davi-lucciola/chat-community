@@ -8,10 +8,10 @@ export const UserBasicSchema = z.object({
 });
 
 export const UserSchema = z.object({
-  id: z.string(),
+  _id: z.coerce.string(),
   name: z.string(),
   email: z.email(),
-  imageUrl: z.string().nullable(),
+  imageUrl: z.string().nullable().default(null),
 });
 
 export type UserDTO = z.infer<typeof UserSchema>;

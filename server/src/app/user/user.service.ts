@@ -2,20 +2,20 @@ import mongoose from 'mongoose';
 import { DomainError, NotFoundError, UnauthorizedError } from '@/lib/errors';
 import hash from '@/utils/hash';
 import { User } from './user.model';
-import type { SaveUserDTO, UserDTO } from './user.schema';
+import type { SaveUserDTO } from './user.schema';
 
 export class UserService {
-  async findById(userId: string): Promise<UserDTO> {
+  async findById(userId: string) {
     const user = await User.findOne({ _id: new mongoose.Types.ObjectId(userId) });
 
     if (!user) {
       throw new NotFoundError('User not found');
     }
 
-    return this.userToDto(user);
+    return user;
   }
 
-  async create(userDto: SaveUserDTO): Promise<UserDTO> {
+  async create(userDto: SaveUserDTO) {
     const { name, email, password } = userDto;
 
     const user = await User.findOne({ email: email });
@@ -30,10 +30,10 @@ export class UserService {
       password: await hash.hashPassword(password),
     });
 
-    return this.userToDto(newUser);
+    return newUser;
   }
 
-  async update(userDto: SaveUserDTO, userId: string): Promise<UserDTO> {
+  async update(userDto: SaveUserDTO, userId: string) {
     const { name, email, password } = userDto;
 
     const userEmail = await User.findOne({ email: email });
@@ -63,15 +63,6 @@ export class UserService {
 
     // Update "user.name" in every document witch uses that if nameHasChanged
 
-    return this.userToDto(user);
-  }
-
-  private userToDto(user: InstanceType<typeof User>): UserDTO {
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      imageUrl: user.imageUrl ?? null,
-    };
+    return user;
   }
 }
