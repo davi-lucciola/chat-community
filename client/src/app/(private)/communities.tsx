@@ -6,6 +6,7 @@ import { NavigationHeader } from '@/components/navigation';
 
 import { Button } from '@/components/ui/button';
 import { CommunitiesTabs } from '@/modules/community/components/communities-tabs';
+import { CreateCommunityDialog } from '@/modules/community/components/create-community-dialog';
 
 const communitiesParamsSchema = z.object({
   search: z.string().optional().catch(''),
@@ -39,10 +40,7 @@ function CommunitiesPage() {
               Discover and join communities that interest you
             </p>
           </div>
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus className="size-4 mr-2" />
-            Create Community
-          </Button>
+          <CreateCommunityDialog />
         </div>
 
         <CommunitiesTabs explore={explore} search={search} />
