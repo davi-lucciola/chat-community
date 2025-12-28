@@ -1,6 +1,6 @@
 export type UserDTO = {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  imageUrl?: string;
+  imageUrl: string | null;
 };

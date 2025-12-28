@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { DomainError, NotFoundError } from '@/lib/errors';
 import type { UserDTO } from '../user/user.schema';
-import { Community, type CommunityDocument, CommunityMember } from './community.model';
+import { Community, CommunityMember } from './community.model';
 import type {
   CommunitiesQueryDTO,
   CommunityDTO,
@@ -11,8 +11,35 @@ import type {
 export class CommunityService {
   constructor(private readonly currentUser: UserDTO) {}
 
-  async findAll(query: CommunitiesQueryDTO): Promise<CommunityDTO[]> {
-    const pipeline: mongoose.PipelineStage[] = [];
+  async findAll(query: CommunitiesQueryDTO) {
+    const pipeline: mongoose.PipelineStage[] = [
+      {
+        $lookup: {
+          from: 'community_members',
+          localField: '_id',
+          foreignField: 'communityId',
+          pipeline: [
+            {
+              $match: {
+                $and: [
+                  { 'user.id': new mongoose.Types.ObjectId(this.currentUser._id) },
+                ],
+              },
+            },
+            { $limit: 1 },
+          ],
+          as: 'membership',
+        },
+      },
+      {
+        $addFields: {
+          isMember: { $gt: [{ $size: '$membership' }, 0] },
+        },
+      },
+      {
+        $project: { membership: false },
+      },
+    ];
 
     if (query.search) {
       pipeline.push({
@@ -24,49 +51,17 @@ export class CommunityService {
 
     if (query.isMember !== undefined) {
       pipeline.push({
-        $lookup: {
-          from: 'community_members',
-          localField: '_id',
-          foreignField: 'communityId',
-          pipeline: [
-            {
-              $match: {
-                $and: [{ 'user.id': new mongoose.Types.ObjectId(this.currentUser.id) }],
-              },
-            },
-            { $limit: 1 },
-          ],
-          as: 'membership',
-        },
-      });
-
-      pipeline.push({
-        $addFields: {
-          isMember: { $gt: [{ $size: '$membership' }, 0] },
-        },
-      });
-
-      pipeline.push({
         $match: {
           $and: [{ isMember: query.isMember }],
         },
       });
-
-      pipeline.push({
-        $project: { membership: false },
-      });
     }
 
-    if (pipeline.length === 0) {
-      const communities = await Community.find();
-      return communities.map(this.communityToDto);
-    }
-
-    const communities = await Community.aggregate<CommunityDocument>(pipeline);
-    return communities.map(this.communityToDto);
+    const communities = await Community.aggregate<CommunityDTO>(pipeline);
+    return communities;
   }
 
-  async findById(communityId: string): Promise<CommunityDTO> {
+  async findById(communityId: string) {
     if (!this.isValidCommunityId(communityId)) {
       throw new NotFoundError('Community not found');
     }
@@ -79,10 +74,10 @@ export class CommunityService {
       throw new NotFoundError('Community not found');
     }
 
-    return this.communityToDto(community);
+    return community;
   }
 
-  async create(communityDto: CreateCommunityDTO): Promise<CommunityDTO> {
+  async create(communityDto: CreateCommunityDTO) {
     const { title, description } = communityDto;
 
     const communityExists = await Community.findOne({
@@ -94,7 +89,7 @@ export class CommunityService {
     }
 
     const user = {
-      id: new mongoose.Types.ObjectId(this.currentUser.id),
+      id: new mongoose.Types.ObjectId(this.currentUser._id),
       name: this.currentUser.name,
       imageUrl: this.currentUser.imageUrl,
     };
@@ -110,10 +105,10 @@ export class CommunityService {
       communityId: community._id,
     });
 
-    return this.communityToDto(community);
+    return community;
   }
 
-  async becomeMember(communityId: string): Promise<CommunityDTO> {
+  async becomeMember(communityId: string) {
     if (!this.isValidCommunityId(communityId)) {
       throw new NotFoundError('Community not found');
     }
@@ -127,7 +122,7 @@ export class CommunityService {
     }
 
     const user = {
-      id: new mongoose.Types.ObjectId(this.currentUser.id),
+      id: new mongoose.Types.ObjectId(this.currentUser._id),
       name: this.currentUser.name,
       imageUrl: this.currentUser.imageUrl,
     };
@@ -147,10 +142,10 @@ export class CommunityService {
       await community.save();
     }
 
-    return this.communityToDto(community);
+    return community;
   }
 
-  async stopBeingMember(communityId: string): Promise<CommunityDTO> {
+  async stopBeingMember(communityId: string) {
     if (!this.isValidCommunityId(communityId)) {
       throw new NotFoundError('Community not found');
     }
@@ -163,7 +158,7 @@ export class CommunityService {
       throw new NotFoundError('Community not found');
     }
 
-    const userId = new mongoose.Types.ObjectId(this.currentUser.id);
+    const userId = new mongoose.Types.ObjectId(this.currentUser._id);
 
     if (community.userId.toString() === userId.toString()) {
       throw new DomainError('You cannot stop being a member of your own community.');
@@ -184,21 +179,10 @@ export class CommunityService {
       await community.save();
     }
 
-    return this.communityToDto(community);
+    return community;
   }
 
   private isValidCommunityId(communityId: string) {
     return mongoose.Types.ObjectId.isValid(communityId);
-  }
-
-  private communityToDto(community: CommunityDocument): CommunityDTO {
-    return {
-      id: community._id.toString(),
-      title: community.title,
-      userId: community.userId.toString(),
-      description: community.description ?? null,
-      totalMembers: community.totalMembers,
-      onlineMembers: community.onlineMembers,
-    };
   }
 }

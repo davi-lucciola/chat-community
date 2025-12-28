@@ -24,7 +24,7 @@ const userController = {
       },
       async (request: Request, reply: Reply) => {
         const userService = new UserService();
-        const { id: userId } = request.user as UserDTO;
+        const { _id: userId } = request.user as UserDTO;
 
         const user = await userService.findById(userId);
 
@@ -51,7 +51,7 @@ const userController = {
       },
       async (request: Request<SaveUserDTO>, reply: Reply) => {
         const userService = new UserService();
-        const { id: userId } = request.user as UserDTO;
+        const { _id: userId } = request.user as UserDTO;
 
         const user = await userService.update(request.body, userId);
 

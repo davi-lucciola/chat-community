@@ -5,10 +5,11 @@ export const CommunityIdSchema = z.object({
 });
 
 export const CommunitySchema = z.object({
-  id: z.string(),
+  _id: z.coerce.string(),
   title: z.string(),
-  userId: z.string(),
-  description: z.string().nullable(),
+  userId: z.coerce.string(),
+  description: z.string().nullable().default(null),
+  isMember: z.boolean().nullish().default(null),
   totalMembers: z.number(),
   onlineMembers: z.number(),
 });

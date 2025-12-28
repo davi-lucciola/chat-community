@@ -26,7 +26,7 @@ export class AuthService {
     }
 
     const userDto: UserDTO = {
-      id: user.id,
+      _id: user._id.toString(),
       name: user.name,
       email: user.email,
       imageUrl: user.imageUrl ?? null,
