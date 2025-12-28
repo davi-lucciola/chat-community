@@ -1,10 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 import { z } from 'zod';
 import { NavigationHeader } from '@/components/navigation';
 
-import { Button } from '@/components/ui/button';
 import { CommunitiesTabs } from '@/modules/community/components/communities-tabs';
 import { CreateCommunityDialog } from '@/modules/community/components/create-community-dialog';
 

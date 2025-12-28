@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
+import { useDebounce } from '@uidotdev/usehooks';
 import { Search, Users } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -27,14 +28,17 @@ export function CommunitiesTabs({ search, explore }: CommunitiesProps) {
   const [tab, setTab] = useState<CommunityTab>(
     explore ? 'explore-communities' : 'my-communities',
   );
+
   const [filter, setFilter] = useState<CommunitiesQuery>({
     search: search,
     isMember: !explore,
   });
+  const debounceDelayInMs = 300;
+  const debouncedFilter = useDebounce(filter, debounceDelayInMs);
 
   const { data: communities } = useQuery({
-    queryKey: ['communities', filter],
-    queryFn: () => communityService.getCommunities(filter),
+    queryKey: ['communities', debouncedFilter],
+    queryFn: () => communityService.getCommunities(debouncedFilter),
   });
 
   const onTabChange = (value: string) => {
@@ -51,11 +55,11 @@ export function CommunitiesTabs({ search, explore }: CommunitiesProps) {
         <Input
           type="text"
           placeholder="Search communities..."
-          value={filter.search}
+          value={filter.search ?? ''}
           onChange={(e) =>
             setFilter({
               ...filter,
-              search: e.target.value,
+              search: e.target.value === '' ? undefined : e.target.value,
             })
           }
           className="pl-10 h-12 text-lg"
