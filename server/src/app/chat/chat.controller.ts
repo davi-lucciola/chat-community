@@ -1,69 +1,93 @@
 import type { FastifyInstance } from 'fastify';
-import type ws from 'ws';
 import { authenticate } from '@/lib/auth';
-import type { QueryRequest } from '@/lib/http';
-import { type ChatConnectionQueryDTO, chatConnectionQuerySchema } from './chat.schema';
-
-type WsClients = Map<string, ws.WebSocket>;
-export const chatWsClients: Map<string, WsClients> = new Map();
+import { websocketErrorHandler } from '@/lib/errors';
+import type { QueryRequest, Reply } from '@/lib/http';
+import { MessageSchema } from '@/lib/schemas';
+import type { CommunityDocument } from '../community/community.model';
+import { CommunityService } from '../community/community.service';
+import {
+  type ChatConnectionQueryDTO,
+  ChatConnectionQuerySchema,
+  ChatMessageSchema,
+  SendMessageSchema,
+} from './chat.schema';
+import { ChatService } from './chat.service';
+import { chatConnectionManager } from './chat.ws-manager';
 
 const chatController = {
+  getChatMessages: (app: FastifyInstance) => {
+    app.addHook('preHandler', authenticate);
+
+    app.get(
+      '/chat/messages',
+      {
+        schema: {
+          tags: ['Chat'],
+          querystring: ChatConnectionQuerySchema,
+          description: 'Get messages from a community',
+          response: {
+            200: ChatMessageSchema,
+            404: MessageSchema,
+          },
+        },
+      },
+      async (request: QueryRequest<ChatConnectionQueryDTO>, reply: Reply) => {
+        const user = request.user;
+        const { communityId } = request.query;
+
+        const communityService = new CommunityService(user);
+        const community = await communityService.findById(communityId);
+
+        const chatConnections = chatConnectionManager.getChatConnections(communityId);
+        const chatService = new ChatService(user, community, chatConnections);
+
+        const chatMessages = await chatService.getMessages();
+        reply.send(chatMessages);
+      },
+    );
+  },
   chatConnection: (app: FastifyInstance) => {
     app.addHook('preHandler', authenticate);
 
     app.get(
-      '/chat',
+      '/chat/connect',
       {
         schema: {
           tags: ['Chat'],
-          querystring: chatConnectionQuerySchema,
+          querystring: ChatConnectionQuerySchema,
           description: 'Connect with a chat',
         },
         websocket: true,
       },
-      (socket, request: QueryRequest<ChatConnectionQueryDTO>) => {
+      async (socket, request: QueryRequest<ChatConnectionQueryDTO>) => {
         const user = request.user;
+
+        const communityService = new CommunityService(user);
+
         const { communityId } = request.query;
 
-        const communityWsClients: WsClients =
-          chatWsClients.get(communityId) ?? new Map();
+        const community = await websocketErrorHandler<CommunityDocument>(socket, () =>
+          communityService.findById(communityId),
+        );
 
-        if (!chatWsClients.has(communityId)) {
-          chatWsClients.set(communityId, communityWsClients);
-        }
+        if (!community) return;
 
-        if (!communityWsClients.has(user._id)) {
-          communityWsClients.set(user._id, socket);
-        }
+        const chatConnections = chatConnectionManager.add(
+          socket,
+          communityId,
+          user._id,
+        );
 
-        socket.on('message', (message) => {
-          const data = JSON.parse(message.toString());
+        socket.on('message', async (message) => {
+          const chatService = new ChatService(user, community, chatConnections);
 
-          const connectedWsClients = communityWsClients
-            .values()
-            .map((conn) => {
-              if (conn.readyState !== conn.OPEN) {
-                communityWsClients.delete(user._id);
-                return null;
-              }
-
-              return conn;
-            })
-            .filter((conn) => conn !== null);
-
-          connectedWsClients.forEach((conn) => {
-            conn.send(
-              JSON.stringify({
-                message: data.message,
-                username: user.name,
-              }),
-            );
+          await websocketErrorHandler(socket, async () => {
+            const data = SendMessageSchema.parse(JSON.parse(message.toString()));
+            await chatService.sendMessage(data.message);
           });
         });
 
-        socket.on('close', () => {
-          communityWsClients.delete(user._id);
-        });
+        socket.on('close', () => chatConnectionManager.remove(communityId, user._id));
       },
     );
   },
