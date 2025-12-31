@@ -16,4 +16,5 @@ const chatMessageDocument = new mongoose.Schema({
   },
 });
 
+export type ChatMessageDocument = InstanceType<typeof ChatMessage>;
 export const ChatMessage = mongoose.model('Chat_Message', chatMessageDocument);

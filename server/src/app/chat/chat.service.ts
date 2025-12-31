@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import type { CommunityDocument } from '../community/community.model';
 import type { UserDTO } from '../user/user.schema';
 import { ChatMessage } from './chat.model';
-import { ChatMessageResponseSchema } from './chat.schema';
+import { type ChatMessageDTO, ChatMessageResponseSchema } from './chat.schema';
 import type { ChatConnections } from './chat.ws-manager';
 
 export class ChatService {
@@ -11,6 +11,26 @@ export class ChatService {
     private readonly community: CommunityDocument,
     private readonly chatConnections: ChatConnections,
   ) {}
+
+  async getMessages() {
+    const pipeline: mongoose.PipelineStage[] = [
+      {
+        $addFields: {
+          createdAt: { $toDate: '$_id' },
+        },
+      },
+      {
+        $sort: {
+          _id: -1,
+        },
+      },
+      {
+        $limit: 100,
+      },
+    ];
+
+    return ChatMessage.aggregate<ChatMessageDTO>(pipeline);
+  }
 
   async sendMessage(message: string) {
     await ChatMessage.create({

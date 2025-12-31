@@ -1,23 +1,56 @@
 import type { FastifyInstance } from 'fastify';
 import { authenticate } from '@/lib/auth';
 import { websocketErrorHandler } from '@/lib/errors';
-import type { QueryRequest } from '@/lib/http';
+import type { QueryRequest, Reply } from '@/lib/http';
+import { MessageSchema } from '@/lib/schemas';
 import type { CommunityDocument } from '../community/community.model';
 import { CommunityService } from '../community/community.service';
 import {
   type ChatConnectionQueryDTO,
   ChatConnectionQuerySchema,
   ChatMessageSchema,
+  SendMessageSchema,
 } from './chat.schema';
 import { ChatService } from './chat.service';
 import { chatConnectionManager } from './chat.ws-manager';
 
 const chatController = {
+  getChatMessages: (app: FastifyInstance) => {
+    app.addHook('preHandler', authenticate);
+
+    app.get(
+      '/chat/messages',
+      {
+        schema: {
+          tags: ['Chat'],
+          querystring: ChatConnectionQuerySchema,
+          description: 'Get messages from a community',
+          response: {
+            200: ChatMessageSchema,
+            404: MessageSchema,
+          },
+        },
+      },
+      async (request: QueryRequest<ChatConnectionQueryDTO>, reply: Reply) => {
+        const user = request.user;
+        const { communityId } = request.query;
+
+        const communityService = new CommunityService(user);
+        const community = await communityService.findById(communityId);
+
+        const chatConnections = chatConnectionManager.getChatConnections(communityId);
+        const chatService = new ChatService(user, community, chatConnections);
+
+        const chatMessages = await chatService.getMessages();
+        reply.send(chatMessages);
+      },
+    );
+  },
   chatConnection: (app: FastifyInstance) => {
     app.addHook('preHandler', authenticate);
 
     app.get(
-      '/chat',
+      '/chat/connect',
       {
         schema: {
           tags: ['Chat'],
@@ -49,7 +82,7 @@ const chatController = {
           const chatService = new ChatService(user, community, chatConnections);
 
           await websocketErrorHandler(socket, async () => {
-            const data = ChatMessageSchema.parse(JSON.parse(message.toString()));
+            const data = SendMessageSchema.parse(JSON.parse(message.toString()));
             await chatService.sendMessage(data.message);
           });
         });
