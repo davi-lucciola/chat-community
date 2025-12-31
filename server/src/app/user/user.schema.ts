@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Get
 export const UserBasicSchema = z.object({
-  id: z.string(),
+  _id: z.coerce.string(),
   name: z.string(),
   imageUrl: z.string().nullish(),
 });

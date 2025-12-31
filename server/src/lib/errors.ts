@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import type ws from 'ws';
 
 export class DomainError extends Error {}
 export class NotFoundError extends DomainError {}
@@ -36,4 +37,23 @@ export const errorHandler = (
   reply.code(500).send({
     message: 'Sorry, a unexpected error occurred.',
   });
+};
+
+export const websocketErrorHandler = async <T>(
+  socket: ws.WebSocket,
+  callback: () => Promise<T>,
+) => {
+  try {
+    return await callback();
+  } catch (error) {
+    const data = { message: '', error: true };
+
+    data.message =
+      error instanceof DomainError
+        ? error.message
+        : 'Sorry, a unexpected error occurred.';
+
+    socket.send(JSON.stringify(data));
+    socket.close();
+  }
 };

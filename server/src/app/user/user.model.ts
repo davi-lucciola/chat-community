@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export const basicUserDocument = new mongoose.Schema(
   {
-    id: {
+    _id: {
       type: mongoose.Types.ObjectId,
       required: true,
     },
