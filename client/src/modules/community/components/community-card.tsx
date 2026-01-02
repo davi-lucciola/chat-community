@@ -45,7 +45,7 @@ export function CommunityCard({ community }: CommunityCardProps) {
         </div>
       </div>
 
-      {community.isMember && (
+      {!community.isMember && (
         <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:cursor-pointer">
           Join Community
         </Button>

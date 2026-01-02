@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import {
   Hash,
@@ -16,6 +17,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { CommunityHeader } from '@/modules/chat/components/community-header';
+import communityService from '@/modules/community/community.service';
 
 export const Route = createFileRoute('/(private)/community/$communityId/chat')({
   component: CommunityChatPage,
@@ -141,14 +144,15 @@ const communityData = {
 
 function CommunityChatPage() {
   const { communityId } = Route.useParams();
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState(mockMessages);
 
-  const community = communityData[communityId as keyof typeof communityData] || {
-    name: 'Community',
-    members: 0,
-    online: 0,
-  };
+  // const community = communityData[communityId as keyof typeof communityData] || {
+  //   name: 'Community',
+  //   members: 0,
+  //   online: 0,
+  // };
 
   const onlineUsers = mockUsers.filter((user) => user.online);
   const offlineUsers = mockUsers.filter((user) => !user.online);
@@ -181,32 +185,7 @@ function CommunityChatPage() {
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col min-h-0">
           {/* Channel Header */}
-          <div className="border-b border-border/40 bg-card/30 px-6 py-4 shrink-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Hash className="size-5 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground">
-                    {community.name}
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    {community.members.toLocaleString()} members • {community.online}{' '}
-                    online
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon">
-                  <Search className="size-5" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="size-5" />
-                </Button>
-              </div>
-            </div>
-          </div>
+          <CommunityHeader communityId={communityId} />
 
           {/* Messages Area */}
           <div className="flex-1 overflow-hidden min-h-0">
@@ -242,7 +221,7 @@ function CommunityChatPage() {
                 <div className="relative">
                   <Input
                     type="text"
-                    placeholder={`Message ${community.name}`}
+                    placeholder={`Send your message`}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => {
