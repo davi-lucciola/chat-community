@@ -22,7 +22,7 @@ export class CommunityService {
             {
               $match: {
                 $and: [
-                  { 'user.id': new mongoose.Types.ObjectId(this.currentUser._id) },
+                  { 'user._id': new mongoose.Types.ObjectId(this.currentUser._id) },
                 ],
               },
             },
@@ -89,7 +89,7 @@ export class CommunityService {
     }
 
     const user = {
-      id: new mongoose.Types.ObjectId(this.currentUser._id),
+      _id: new mongoose.Types.ObjectId(this.currentUser._id),
       name: this.currentUser.name,
       imageUrl: this.currentUser.imageUrl,
     };
@@ -97,7 +97,7 @@ export class CommunityService {
     const community = await Community.create({
       title,
       description,
-      userId: user.id,
+      userId: user._id,
     });
 
     await CommunityMember.create({
