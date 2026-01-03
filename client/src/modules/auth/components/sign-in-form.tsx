@@ -17,9 +17,6 @@ export function SignInForm() {
   const { mutateAsync: login, isPending } = useMutation({
     mutationKey: ['auth', 'sign-in'],
     mutationFn: authService.signIn,
-    onError: (error) => {
-      toast.error(error.message, toastStyles.error);
-    },
   });
 
   const form = useForm({

@@ -17,9 +17,6 @@ export function SignUpForm() {
   const { mutateAsync: createUser, isPending } = useMutation({
     mutationKey: ['auth', 'sign-up'],
     mutationFn: authService.signUp,
-    onError: (error) => {
-      toast.error(error.message, toastStyles.error);
-    },
   });
 
   const form = useForm({
