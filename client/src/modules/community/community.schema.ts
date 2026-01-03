@@ -1,5 +1,12 @@
 import { z } from 'zod';
 
+export const communitiesSearchParamsSchema = z.object({
+  search: z.string().optional().catch(''),
+  explore: z.coerce.boolean().optional().catch(false),
+});
+
+export type CommunitiesSearchParams = z.infer<typeof communitiesSearchParamsSchema>;
+
 export type CommunitiesQuery = {
   search?: string;
   isMember?: boolean;

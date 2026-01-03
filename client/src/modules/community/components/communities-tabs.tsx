@@ -10,14 +10,14 @@ import type { CommunitiesQuery } from '../community.schema';
 import communityService from '../community.service';
 import { CommunityCard } from './community-card';
 
-type CommunitiesProps = {
+type CommunitiesTabsProps = {
   filter: CommunitiesQuery;
   setFilter: (filter: CommunitiesQuery) => void;
 };
 
 type CommunityTab = 'explore-communities' | 'my-communities';
 
-export function CommunitiesTabs({ filter, setFilter }: CommunitiesProps) {
+export function CommunitiesTabs({ filter, setFilter }: CommunitiesTabsProps) {
   const tab = !filter.isMember ? 'explore-communities' : 'my-communities';
 
   const onTabChange = (value: string) => {
@@ -43,7 +43,7 @@ export function CommunitiesTabs({ filter, setFilter }: CommunitiesProps) {
   );
 }
 
-function MyCommunitiesTab({ filter, setFilter }: CommunitiesProps) {
+function MyCommunitiesTab({ filter, setFilter }: CommunitiesTabsProps) {
   const { data: communities } = useSuspenseQuery({
     queryKey: ['communities', filter],
     queryFn: () => communityService.getCommunities(filter),
@@ -84,7 +84,7 @@ function MyCommunitiesTab({ filter, setFilter }: CommunitiesProps) {
   );
 }
 
-function ExploreCommunitiesTab({ filter }: CommunitiesProps) {
+function ExploreCommunitiesTab({ filter }: CommunitiesTabsProps) {
   const { data: communities } = useSuspenseQuery({
     queryKey: ['communities', filter],
     queryFn: () => communityService.getCommunities(filter),
