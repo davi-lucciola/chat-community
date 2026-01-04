@@ -13,6 +13,11 @@ async function getCommunities(query: CommunitiesQuery) {
   return res.data;
 }
 
+async function getCommunityById(id: string) {
+  const res = await api.get<CommunityDTO>(`/communities/${id}`);
+  return res.data;
+}
+
 async function createCommunity(createCommunityDto: CreateCommunityDTO) {
   const res = await api.post('/communities', createCommunityDto);
   return res.data;
@@ -20,5 +25,6 @@ async function createCommunity(createCommunityDto: CreateCommunityDTO) {
 
 export default {
   getCommunities,
+  getCommunityById,
   createCommunity,
 };
