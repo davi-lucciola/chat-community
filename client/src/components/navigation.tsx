@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/components/ui/button';
-import { UserAvatar } from '@/modules/user/components/user-avatar';
+import { UserProfileDropdown } from '@/modules/user/components/user-profile-dropdown';
 import { ChatCommunityLogo } from './logo';
 import { ThemeToogle } from './theme/theme-toggle';
 
@@ -28,7 +28,7 @@ export function NavigationHeader({ className, ...props }: NavigationHeaderProps)
               </Button>
             </Link>
             <ThemeToogle />
-            <UserAvatar />
+            <UserProfileDropdown />
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { api } from '@/lib/api';
 import type {
   CommunitiesQuery,
   CommunityDTO,
+  CommunityMemberDTO,
   CreateCommunityDTO,
 } from './community.schema';
 
@@ -23,8 +24,16 @@ async function createCommunity(createCommunityDto: CreateCommunityDTO) {
   return res.data;
 }
 
+async function getMembers(communityId: string) {
+  const res = await api.get<CommunityMemberDTO[]>(
+    `/communities/${communityId}/members`,
+  );
+  return res.data;
+}
+
 export default {
   getCommunities,
   getCommunityById,
   createCommunity,
+  getMembers,
 };
