@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 import { DomainError, NotFoundError } from '@/lib/errors';
+import { isValidObjectId } from '@/utils/object-id';
 import type { UserDTO } from '../user/user.schema';
 import { Community, CommunityMember } from './community.model';
 import type {
   CommunitiesQueryDTO,
   CommunityDTO,
+  CommunityMemberDTO,
   CreateCommunityDTO,
 } from './community.schema';
 
@@ -62,7 +64,7 @@ export class CommunityService {
   }
 
   async findById(communityId: string) {
-    if (!this.isValidCommunityId(communityId)) {
+    if (!isValidObjectId(communityId)) {
       throw new NotFoundError('Community not found');
     }
 
@@ -75,6 +77,25 @@ export class CommunityService {
     }
 
     return community;
+  }
+
+  async getMembers(communityId: string) {
+    if (!isValidObjectId(communityId)) {
+      throw new NotFoundError('Community not found');
+    }
+
+    const members = CommunityMember.aggregate<CommunityMemberDTO>([
+      {
+        $match: { communityId: new mongoose.Types.ObjectId(communityId) },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+    ]);
+
+    return members;
   }
 
   async create(communityDto: CreateCommunityDTO) {
@@ -109,7 +130,7 @@ export class CommunityService {
   }
 
   async becomeMember(communityId: string) {
-    if (!this.isValidCommunityId(communityId)) {
+    if (!isValidObjectId(communityId)) {
       throw new NotFoundError('Community not found');
     }
 
@@ -146,7 +167,7 @@ export class CommunityService {
   }
 
   async stopBeingMember(communityId: string) {
-    if (!this.isValidCommunityId(communityId)) {
+    if (!isValidObjectId(communityId)) {
       throw new NotFoundError('Community not found');
     }
 
@@ -180,9 +201,5 @@ export class CommunityService {
     }
 
     return community;
-  }
-
-  private isValidCommunityId(communityId: string) {
-    return mongoose.Types.ObjectId.isValid(communityId);
   }
 }
