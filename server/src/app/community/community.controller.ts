@@ -12,6 +12,7 @@ import {
   CommunitiesQuerySchema,
   CommunitiesSchema,
   CommunityIdSchema,
+  CommunityMembersSchema,
   CommunitySchema,
   CreateCommunitySchema,
 } from './community.schema';
@@ -98,6 +99,34 @@ const communityController = {
         const community = await communityService.create(request.body);
 
         reply.send(community);
+      },
+    );
+  },
+  getMembers: async (app: FastifyInstance) => {
+    app.addHook('preHandler', authenticate);
+
+    app.get(
+      '/communities/:id/members',
+      {
+        schema: {
+          tags: ['Community'],
+          description: 'Get community members by community id.',
+          params: CommunityIdSchema,
+          response: {
+            200: CommunityMembersSchema,
+            401: MessageSchema,
+            404: MessageSchema,
+          },
+        },
+      },
+      async (request: ParamRequest<CommunityIdDTO>, reply: Reply) => {
+        const { id: communityId } = request.params;
+        const currentUser = request.user as UserDTO;
+
+        const communityService = new CommunityService(currentUser);
+        const communitiesMembers = await communityService.getMembers(communityId);
+
+        reply.send(communitiesMembers);
       },
     );
   },
