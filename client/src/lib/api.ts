@@ -7,6 +7,7 @@ export type MessageDTO = {
 export class ApiError extends Error {}
 export class BadRequestError extends ApiError {}
 export class UnauthorizedError extends ApiError {}
+export class NotFoundError extends ApiError {}
 export class InternalServerError extends ApiError {}
 
 type UnauthorizedHandler = (message: string) => void;
@@ -32,6 +33,10 @@ api.interceptors.response.use((response) => {
   if (response.status === 401) {
     triggerUnauthorized(body.message);
     return Promise.reject(new UnauthorizedError(body.message));
+  }
+
+  if (response.status === 404) {
+    return Promise.reject(new NotFoundError(body.message));
   }
 
   if (response.status >= 400 && response.status < 500) {

@@ -5,13 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { UserAvatar } from '@/modules/user/components/user-avatar';
+import { useChat } from '../chat.context';
 import communityService from '../community.service';
 
-type ChatMembersProps = {
-  communityId: string;
-};
-
-export function ChatMembersSidebar({ communityId }: ChatMembersProps) {
+export function ChatMembersSidebar() {
   return (
     <div className="w-80 border-l border-border/40 bg-card/30 flex flex-col min-h-0">
       <div className="border-b border-border/40 px-4 py-4 shrink-0">
@@ -23,18 +20,15 @@ export function ChatMembersSidebar({ communityId }: ChatMembersProps) {
 
       <div className="flex-1 overflow-hidden min-h-0">
         <Suspense fallback={<ChatMembersSkeleton />}>
-          <ChatMembers communityId={communityId} />
+          <ChatMembers />
         </Suspense>
       </div>
     </div>
   );
 }
 
-function ChatMembers({ communityId }: ChatMembersProps) {
-  const { data: community } = useSuspenseQuery({
-    queryKey: ['community', communityId],
-    queryFn: () => communityService.getCommunityById(communityId),
-  });
+function ChatMembers() {
+  const { community } = useChat();
 
   const { data: members } = useSuspenseQuery({
     queryKey: ['community', community._id, 'members'],
@@ -147,5 +141,22 @@ function ChatMembersSkeleton() {
         </div>
       </div>
     </ScrollArea>
+  );
+}
+
+export function ChatMembersSidebarSkeleton() {
+  return (
+    <div className="w-80 border-l border-border/40 bg-card/30 flex flex-col min-h-0">
+      <div className="border-b border-border/40 px-4 py-4 shrink-0">
+        <h3 className="font-semibold text-foreground flex items-center gap-2">
+          <UsersIcon className="size-5" />
+          Members
+        </h3>
+      </div>
+
+      <div className="flex-1 overflow-hidden min-h-0">
+        <ChatMembersSkeleton />
+      </div>
+    </div>
   );
 }

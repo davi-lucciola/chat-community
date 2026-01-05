@@ -3,30 +3,23 @@ import { Suspense } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useChat } from '../chat.context';
 import chatService from '../chat.service';
-import communityService from '../community.service';
 
-type ChatMessagesProps = {
-  communityId: string;
-};
-
-export function ChatMessages({ communityId }: ChatMessagesProps) {
+export function ChatMessages() {
   return (
     <div className="flex-1 overflow-hidden min-h-0">
       <ScrollArea className="h-full">
         <Suspense fallback={<MessagesSkeleton />}>
-          <Messages communityId={communityId} />
+          <Messages />
         </Suspense>
       </ScrollArea>
     </div>
   );
 }
 
-function Messages({ communityId }: ChatMessagesProps) {
-  const { data: community } = useSuspenseQuery({
-    queryKey: ['community', communityId],
-    queryFn: () => communityService.getCommunityById(communityId),
-  });
+function Messages() {
+  const { community } = useChat();
 
   const { data: messages } = useSuspenseQuery({
     queryKey: ['community', community._id, 'messages'],
@@ -68,6 +61,16 @@ function MessagesSkeleton() {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+export function ChatMessagesSkeleton() {
+  return (
+    <div className="flex-1 overflow-hidden min-h-0">
+      <ScrollArea className="h-full">
+        <MessagesSkeleton />
+      </ScrollArea>
     </div>
   );
 }
