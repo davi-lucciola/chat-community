@@ -13,7 +13,12 @@ export class ChatService {
   ) {}
 
   async getMessages() {
-    const pipeline: mongoose.PipelineStage[] = [
+    return ChatMessage.aggregate<ChatMessageDTO>([
+      {
+        $match: {
+          communityId: this.community._id,
+        },
+      },
       {
         $addFields: {
           createdAt: { $toDate: '$_id' },
@@ -27,9 +32,7 @@ export class ChatService {
       {
         $limit: 100,
       },
-    ];
-
-    return ChatMessage.aggregate<ChatMessageDTO>(pipeline);
+    ]);
   }
 
   async sendMessage(message: string) {
