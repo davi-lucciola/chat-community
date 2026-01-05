@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { UserBasicDTO } from '../user/user.schema';
 
 export const communitiesSearchParamsSchema = z.object({
   search: z.string().optional().catch(''),
@@ -32,3 +33,8 @@ export const createCommunitySchema = z.object({
 });
 
 export type CreateCommunityDTO = z.infer<typeof createCommunitySchema>;
+
+export type CommunityMemberDTO = {
+  user: UserBasicDTO;
+  communityId: string;
+};
