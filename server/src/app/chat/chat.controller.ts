@@ -8,7 +8,7 @@ import { CommunityService } from '../community/community.service';
 import {
   type ChatConnectionQueryDTO,
   ChatConnectionQuerySchema,
-  ChatMessageSchema,
+  ChatMessagesSchema,
   SendMessageSchema,
 } from './chat.schema';
 import { ChatService } from './chat.service';
@@ -26,7 +26,7 @@ const chatController = {
           querystring: ChatConnectionQuerySchema,
           description: 'Get messages from a community',
           response: {
-            200: ChatMessageSchema,
+            200: ChatMessagesSchema,
             404: MessageSchema,
           },
         },

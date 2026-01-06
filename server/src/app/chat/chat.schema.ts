@@ -9,7 +9,7 @@ export const SendMessageSchema = z.object({
   message: z.string({ error: 'The message is required' }),
 });
 
-export const ChatMessageSchema = z.array(
+export const ChatMessagesSchema = z.array(
   z.object({
     _id: z.coerce.string(),
     message: z.string(),
@@ -19,11 +19,20 @@ export const ChatMessageSchema = z.array(
   }),
 );
 
-export const ChatMessageResponseSchema = SendMessageSchema.extend({
-  user: UserBasicSchema.nullish(),
+export const ChatMessageSchema = z.object({
+  _id: z.coerce.string(),
+  message: z.string(),
+  user: UserBasicSchema,
+  communityId: z.coerce.string(),
+  createdAt: z.date().transform((value) => value.toISOString()),
+});
+
+export const ChatEventSchema = z.object({
+  payload: ChatMessageSchema,
   error: z.boolean().default(false),
+  event: z.enum(['message']).default('message'),
 });
 
 export type SendMessageDTO = z.infer<typeof SendMessageSchema>;
-export type ChatMessageDTO = z.infer<typeof ChatMessageSchema>;
+export type ChatMessageDTO = z.infer<typeof ChatMessagesSchema>;
 export type ChatConnectionQueryDTO = z.infer<typeof ChatConnectionQuerySchema>;
