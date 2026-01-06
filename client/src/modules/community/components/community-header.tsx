@@ -1,5 +1,5 @@
 import { Hash, MoreVertical, Search } from 'lucide-react';
-import { type PropsWithChildren, Suspense } from 'react';
+import type { PropsWithChildren } from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useChat } from '../chat.context';
@@ -7,10 +7,7 @@ import { useChat } from '../chat.context';
 export function CommunityHeader() {
   return (
     <HeaderShell>
-      <Suspense fallback={<CommunityInfoSkeleton />}>
-        <CommunityInfo />
-      </Suspense>
-
+      <CommunityInfo />
       <HeaderActions />
     </HeaderShell>
   );
