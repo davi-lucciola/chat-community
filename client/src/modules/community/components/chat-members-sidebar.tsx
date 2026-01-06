@@ -1,6 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { UsersIcon } from 'lucide-react';
-import { Suspense } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,9 +18,7 @@ export function ChatMembersSidebar() {
       </div>
 
       <div className="flex-1 overflow-hidden min-h-0">
-        <Suspense fallback={<ChatMembersSkeleton />}>
-          <ChatMembers />
-        </Suspense>
+        <ChatMembers />
       </div>
     </div>
   );

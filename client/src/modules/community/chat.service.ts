@@ -1,7 +1,13 @@
 import { api } from '@/lib/api';
 import type { ChatMessageDTO } from './chat.schema';
 
-// async function connect(communityId: string) {}
+function connect(communityId: string) {
+  const url = api.getUri().replace('http', 'ws');
+  const params = new URLSearchParams({ communityId });
+
+  const socket = new WebSocket(`${url}/chat/connect?${params.toString()}`);
+  return socket;
+}
 
 async function getMessages(communityId: string) {
   const res = await api.get<ChatMessageDTO[]>('/chat/messages', {
@@ -12,5 +18,6 @@ async function getMessages(communityId: string) {
 }
 
 export default {
+  connect,
   getMessages,
 };
