@@ -48,6 +48,8 @@ export const websocketErrorHandler = async <T>(
   } catch (error) {
     const data = { message: '', error: true };
 
+    console.error(error);
+
     data.message =
       error instanceof DomainError
         ? error.message

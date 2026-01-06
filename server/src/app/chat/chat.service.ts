@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import type { CommunityDocument } from '../community/community.model';
 import type { UserDTO } from '../user/user.schema';
 import { ChatMessage } from './chat.model';
-import { type ChatMessageDTO, ChatMessageResponseSchema } from './chat.schema';
+import { ChatEventSchema, type ChatMessageDTO } from './chat.schema';
 import type { ChatConnections } from './chat.ws-manager';
 
 export class ChatService {
@@ -36,7 +36,7 @@ export class ChatService {
   }
 
   async sendMessage(message: string) {
-    await ChatMessage.create({
+    const chatMessage = await ChatMessage.create({
       message: message,
       user: {
         _id: new mongoose.Types.ObjectId(this.currentUser._id),
@@ -58,13 +58,20 @@ export class ChatService {
       })
       .map(([_, connection]) => connection);
 
+    const chatMessageEvent = ChatEventSchema.parse({
+      error: false,
+      payload: {
+        _id: chatMessage._id,
+        message: chatMessage.message,
+        user: chatMessage.user,
+        communityId: chatMessage.communityId,
+        createdAt: chatMessage._id.getTimestamp(),
+      },
+      event: 'message',
+    });
+
     connectedUsers.forEach((connection) => {
-      const chatMessageResponse = ChatMessageResponseSchema.parse({
-        error: false,
-        message: message,
-        user: this.currentUser,
-      });
-      connection.send(JSON.stringify(chatMessageResponse));
+      connection.send(JSON.stringify(chatMessageEvent));
     });
   }
 }
