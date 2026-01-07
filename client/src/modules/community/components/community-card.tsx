@@ -1,14 +1,15 @@
 // import { Badge } from '@/components/ui/badge';
+
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { Loader, Users } from 'lucide-react';
+import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import type { CommunityDTO } from '../community.schema';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import communityService from '../community.service';
-import { toast } from 'sonner';
 import { toastStyles } from '@/components/ui/sonner';
-import { useNavigate } from '@tanstack/react-router';
+import type { CommunityDTO } from '../community.schema';
+import communityService from '../community.service';
 
 type CommunityCardProps = {
   community: CommunityDTO;
