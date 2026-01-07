@@ -1,15 +1,38 @@
 // import { Badge } from '@/components/ui/badge';
-import { Users } from 'lucide-react';
+import { Loader, Users } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import type { CommunityDTO } from '../community.schema';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import communityService from '../community.service';
+import { toast } from 'sonner';
+import { toastStyles } from '@/components/ui/sonner';
+import { useNavigate } from '@tanstack/react-router';
 
 type CommunityCardProps = {
   community: CommunityDTO;
 };
 
 export function CommunityCard({ community }: CommunityCardProps) {
+  const navigate = useNavigate();
+
+  const { mutateAsync: becomeMember, isPending } = useMutation({
+    mutationKey: ['community', community._id, 'join'],
+    mutationFn: communityService.becomeMember,
+  });
+
+  const onBecomeMember = async () => {
+    const { message } = await becomeMember(community._id);
+
+    navigate({
+      to: '/community/$communityId/chat',
+      params: { communityId: community._id },
+    });
+
+    toast.success(message, toastStyles.success);
+  };
+
   return (
     <Card key={community._id} className="p-6 hover:bg-card/80 transition-colors h-full">
       <div className="flex items-start gap-4 mb-4">
@@ -46,8 +69,13 @@ export function CommunityCard({ community }: CommunityCardProps) {
       </div>
 
       {!community.isMember && (
-        <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:cursor-pointer">
+        <Button
+          disabled={isPending}
+          onClick={onBecomeMember}
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:cursor-pointer"
+        >
           Join Community
+          {isPending && <Loader className="size-4 animate-spin" />}
         </Button>
       )}
     </Card>
