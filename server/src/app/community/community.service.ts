@@ -143,14 +143,14 @@ export class CommunityService {
     }
 
     const user = {
-      id: new mongoose.Types.ObjectId(this.currentUser._id),
+      _id: new mongoose.Types.ObjectId(this.currentUser._id),
       name: this.currentUser.name,
       imageUrl: this.currentUser.imageUrl,
     };
 
     const isCommunityMember = await CommunityMember.findOne({
       communityId: community._id,
-      'user.id': user.id,
+      'user._id': user._id,
     });
 
     if (!isCommunityMember) {
@@ -187,13 +187,13 @@ export class CommunityService {
 
     const isCommunityMember = await CommunityMember.findOne({
       communityId: community._id,
-      'user.id': userId,
+      'user._id': userId,
     });
 
     if (isCommunityMember) {
       await CommunityMember.deleteOne({
         communityId: community.id,
-        'user.id': userId,
+        'user._id': userId,
       });
 
       community.totalMembers -= 1;
