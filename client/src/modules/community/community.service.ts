@@ -1,4 +1,4 @@
-import { api } from '@/lib/api';
+import { api, type MessageDTO } from '@/lib/api';
 import type {
   CommunitiesQuery,
   CommunityDTO,
@@ -31,9 +31,15 @@ async function getMembers(communityId: string) {
   return res.data;
 }
 
+async function becomeMember(communityId: string) {
+  const res = await api.put<MessageDTO>(`/communities/${communityId}/member`);
+  return res.data;
+}
+
 export default {
   getCommunities,
   getCommunityById,
   createCommunity,
   getMembers,
+  becomeMember,
 };
