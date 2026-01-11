@@ -10,7 +10,7 @@ Chat Community is a modern full stack social platform focused on communities. Us
 | Layer      | Tech |
 |------------|------|
 | Backend    | Node.js, Fastify, TypeScript |
-| Frontend   | React, TypeScript, TailwindCSS |
+| Frontend   | React, Tanstack Router, TypeScript, TailwindCSS |
 | Database   | MongoDB |
 | DevOps     | Docker, Docker Compose |
 | Lint       | BiomeJS |
@@ -30,9 +30,32 @@ Chat Community is a modern full stack social platform focused on communities. Us
 
 ## 📂 Project Structure
 
-> 🚧 **WIP**  
-> This section will be updated as the project structure stabilizes.
-
+```
+chat-community
+├── client/                 # React App
+│   ├── src/
+│   │   ├── app/            # Routing with Tankstack Router
+│   │   ├── assets/         # Project assets
+│   │   ├── components/     # General components
+│   │   ├── lib/            # Internal project library for shared and reusable code
+│   │   ├── modules/        # App modules with pages and specific components
+│   │   ├── main.tsx        # React entrypoint
+│   │   └── router.tsx      # Routing entrypoint
+│   └── .env.example
+├── server/                 # Fastify App
+│   ├── src/
+│   │   ├── app/            # App modules separated by domain
+│   │   ├── lib/            # Internal project library for shared code and reusable
+│   │   ├── plugins/        # Fastify plugins
+│   │   ├── utils/          # Short functions of general use
+│   │   ├── routes.ts       # Routes entrypoint
+│   │   ├── server.ts       # Server entrypoint
+│   │   └── settings.ts     # App settings from env
+│   └── .env.example
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
 
 ## 🪟 Demonstration
 
@@ -69,7 +92,9 @@ Automated tests will be introduced in future iterations of the project.
 
 ## 📌 Roadmap
 
-- [ ] 🔔 Real-time chat with WebSockets
-- [ ] 🧵 Message replies
-- [ ] 🛡️ Community moderation tools
-- [ ] 🌐 Public and private communities
+- [x] Real-time chat with WebSockets
+- [x] Message replies
+- [ ] Message Notification
+- [ ] Upload Images to Profile and Community
+- [ ] Public and private communities
+- [ ] User updated event (imageUrl in messages and community membership)
