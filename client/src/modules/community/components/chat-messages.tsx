@@ -1,66 +1,23 @@
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Paperclip, Send, Smile } from 'lucide-react';
-import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { type KeyboardEvent, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toastStyles } from '@/components/ui/sonner';
 import { useChat } from '../chat.context';
-import { type ChatMessageDTO, messageEventSchema } from '../chat.schema';
+import type { ChatMessageDTO } from '../chat.schema';
 import chatService from '../chat.service';
 import type { CommunityDTO } from '../community.schema';
 
 export function ChatMessages() {
-  const { community } = useChat();
-  const queryClient = useQueryClient();
+  const { community, handleSendMessage } = useChat();
 
   const { data: messages } = useSuspenseQuery({
     queryKey: ['community', community._id, 'messages'],
     queryFn: () => chatService.getMessages(community._id),
   });
-
-  const chatSocketRef = useRef<WebSocket | null>(null);
-
-  const handleSendMessage = useCallback((message: string) => {
-    if (!chatSocketRef.current || chatSocketRef.current.readyState !== WebSocket.OPEN) {
-      return;
-    }
-
-    chatSocketRef.current.send(JSON.stringify({ message }));
-  }, []);
-
-  const handleReciveMessage = useCallback(
-    (payload: ChatMessageDTO) => {
-      queryClient.setQueryData(
-        ['community', community._id, 'messages'],
-        (old: ChatMessageDTO[] = []) => [payload, ...old],
-      );
-    },
-    [community, queryClient],
-  );
-
-  useEffect(() => {
-    const chatSocket = chatService.connect(community._id);
-    chatSocketRef.current = chatSocket;
-
-    chatSocket.addEventListener('message', (message) => {
-      const data = messageEventSchema.parse(JSON.parse(message.data));
-
-      if (data.error) {
-        return toast.error(data.payload.message, toastStyles.error);
-      }
-
-      if (data.event === 'message') handleReciveMessage(data.payload);
-    });
-
-    return () => {
-      chatSocket.close();
-      chatSocketRef.current = null;
-    };
-  }, [community, handleReciveMessage]);
 
   return (
     <>

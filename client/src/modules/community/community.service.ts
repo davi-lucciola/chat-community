@@ -36,10 +36,16 @@ async function becomeMember(communityId: string) {
   return res.data;
 }
 
+async function stopBeingMember(communityId: string) {
+  const res = await api.delete<MessageDTO>(`/communities/${communityId}/member`);
+  return res.data;
+}
+
 export default {
   getCommunities,
   getCommunityById,
   createCommunity,
   getMembers,
   becomeMember,
+  stopBeingMember,
 };
