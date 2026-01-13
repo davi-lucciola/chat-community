@@ -62,6 +62,10 @@ When running with Docker:
 
 **Main domains**: `auth`, `user`, `community`, `chat`
 
+**WebSocket Connection Managers** (`server/src/app/websockets/`):
+- `chat.websocket.ts` - `ChatsConnectionManager` class that manages WebSocket connections per community chat room (tracks connected users per community)
+- `user.websocket.ts` - `UserStatusManager` class that tracks user online/offline status and broadcasts status changes to relevant chat rooms
+
 **Key patterns**:
 - **Type-safe validation**: Uses `fastify-type-provider-zod` with Zod schemas for automatic request/response validation
 - **Path aliases**: TypeScript paths use `@/` prefix for `src/` directory
@@ -70,7 +74,7 @@ When running with Docker:
 - **Error handling**: Custom error classes (`DomainError`, `NotFoundError`, `UnauthorizedError`) in `server/src/lib/errors.ts` with centralized `errorHandler`
 - **Settings**: Environment variables validated with Zod in `server/src/settings.ts`
 
-**WebSocket**: Real-time chat uses `@fastify/websocket`. WebSocket routes defined in controllers, error handling via `websocketErrorHandler`.
+**WebSocket**: Real-time chat uses `@fastify/websocket`. WebSocket routes defined in controllers, error handling via `websocketErrorHandler`. Connection state managed by singleton managers in `server/src/app/websockets/`.
 
 **Database**: MongoDB with Mongoose. Connection established in `server/src/server.ts` during app initialization.
 
