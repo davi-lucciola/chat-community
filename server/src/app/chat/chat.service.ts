@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 import type { CommunityDocument } from '../community/community.model';
 import type { UserDTO } from '../user/user.schema';
 import type { ChatConnections } from '../websockets/chat.websocket';
+import { EventSchema } from '../websockets/events.schema';
 import { ChatMessage } from './chat.model';
-import { ChatEventSchema, type ChatMessageDTO } from './chat.schema';
+import type { ChatMessageDTO } from './chat.schema';
 
 export class ChatService {
   constructor(
@@ -58,7 +59,7 @@ export class ChatService {
       })
       .map(([_, connection]) => connection);
 
-    const chatMessageEvent = ChatEventSchema.parse({
+    const chatMessageEvent = EventSchema.parse({
       error: false,
       payload: {
         _id: chatMessage._id,

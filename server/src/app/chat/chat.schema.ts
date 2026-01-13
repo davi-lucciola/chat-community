@@ -27,21 +27,9 @@ export const ChatMessageSchema = z.object({
   createdAt: z.date().transform((value) => value.toISOString()),
 });
 
-export const ChatEventSchema = z.object({
-  payload: ChatMessageSchema,
-  error: z.boolean().default(false),
-  event: z.enum(['message']).default('message'),
-});
-
 export const StatusChangePayloadSchema = z.object({
   userId: z.string(),
   status: UserStatusSchema,
-});
-
-export const StatusChangeEventSchema = z.object({
-  payload: StatusChangePayloadSchema,
-  error: z.boolean().default(false),
-  event: z.literal('status_change'),
 });
 
 export type SendMessageDTO = z.infer<typeof SendMessageSchema>;
