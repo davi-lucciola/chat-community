@@ -7,6 +7,7 @@ import {
 } from '../user/enums/user-status';
 import type { UserDocument } from '../user/user.model';
 import { chatConnectionManager } from './chat.websocket';
+import { EventDTO } from './events.schema';
 
 type UserStatusEntry = {
   status: UserStatus;
@@ -56,7 +57,7 @@ class UserStatusManager {
       communityId: new mongoose.Types.ObjectId('694e40f234be40594400cf2d'),
     });
 
-    const event = {
+    const event: EventDTO = {
       event: 'status_change',
       payload: { userId, status },
       error: false,
