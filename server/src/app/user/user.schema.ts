@@ -26,6 +26,7 @@ export const UserSchema = z.object({
   _id: z.coerce.string(),
   name: z.string(),
   email: z.email(),
+  status: UserStatusSchema,
   imageUrl: z.string().nullable().default(null),
 });
 
