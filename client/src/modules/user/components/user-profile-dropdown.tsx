@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import { LogOut } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +11,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/modules/auth/auth.context';
 import authService from '@/modules/auth/auth.service';
+import { UserAvatar } from './user-avatar';
 
 export function UserProfileDropdown() {
   const { user, unauthorizedHandler } = useAuth();
@@ -32,11 +32,8 @@ export function UserProfileDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Avatar className="size-10 hover:cursor-pointer">
-          <AvatarImage src={user.imageUrl ?? undefined} />
-          <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger className="outline-0">
+        <UserAvatar user={user} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>

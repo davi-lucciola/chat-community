@@ -89,7 +89,7 @@ export function CreateCommunityDialog() {
                     {...field}
                     id="description"
                     aria-invalid={fieldState.invalid}
-                    placeholder="Desbribe your community here"
+                    placeholder="Describe your community here"
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
