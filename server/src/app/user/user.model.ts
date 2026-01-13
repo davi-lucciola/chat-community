@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { UserStatus } from './enums/user-status';
 
 export const basicUserDocument = new mongoose.Schema(
   {
@@ -35,6 +36,12 @@ const userDocument = new mongoose.Schema({
     type: String,
     required: false,
   },
+  status: {
+    type: String,
+    enum: [UserStatus.ONLINE, UserStatus.OFFLINE, UserStatus.IDLE],
+    default: UserStatus.OFFLINE,
+  },
 });
 
 export const User = mongoose.model('User', userDocument, 'users');
+export type UserDocument = InstanceType<typeof User>;

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserBasicSchema } from '../user/user.schema';
+import { UserBasicSchema, UserStatusSchema } from '../user/user.schema';
 
 export const ChatConnectionQuerySchema = z.object({
   communityId: z.string({ error: 'The community id is required to enter the chat' }),
@@ -33,6 +33,18 @@ export const ChatEventSchema = z.object({
   event: z.enum(['message']).default('message'),
 });
 
+export const StatusChangePayloadSchema = z.object({
+  userId: z.string(),
+  status: UserStatusSchema,
+});
+
+export const StatusChangeEventSchema = z.object({
+  payload: StatusChangePayloadSchema,
+  error: z.boolean().default(false),
+  event: z.literal('status_change'),
+});
+
 export type SendMessageDTO = z.infer<typeof SendMessageSchema>;
 export type ChatMessageDTO = z.infer<typeof ChatMessagesSchema>;
 export type ChatConnectionQueryDTO = z.infer<typeof ChatConnectionQuerySchema>;
+export type StatusChangePayloadDTO = z.infer<typeof StatusChangePayloadSchema>;

@@ -1,4 +1,19 @@
 import { z } from 'zod';
+import { UserStatus } from './enums/user-status';
+
+// Status
+export const UserStatusSchema = z.enum([
+  UserStatus.ONLINE,
+  UserStatus.OFFLINE,
+  UserStatus.IDLE,
+]);
+
+export const UserStatusUpdateSchema = z.object({
+  type: z.literal('status_update'),
+  status: UserStatusSchema,
+});
+
+export type UserStatusUpdateDTO = z.infer<typeof UserStatusUpdateSchema>;
 
 // Get
 export const UserBasicSchema = z.object({

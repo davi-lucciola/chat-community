@@ -139,3 +139,5 @@ Server automatically generates OpenAPI/Swagger documentation available at `/api/
 ## Code Quality
 
 Both projects use **BiomeJS** for linting and formatting. Run `npm run format` before committing.
+
+**No emojis**: Never use emojis in code, console logs, comments, or any other output.

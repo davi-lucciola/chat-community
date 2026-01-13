@@ -5,6 +5,7 @@ import type { QueryRequest, Reply } from '@/lib/http';
 import { MessageSchema } from '@/lib/schemas';
 import type { CommunityDocument } from '../community/community.model';
 import { CommunityService } from '../community/community.service';
+import { chatConnectionManager } from '../websockets/chat.websocket';
 import {
   type ChatConnectionQueryDTO,
   ChatConnectionQuerySchema,
@@ -12,7 +13,6 @@ import {
   SendMessageSchema,
 } from './chat.schema';
 import { ChatService } from './chat.service';
-import { chatConnectionManager } from './chat.ws-manager';
 
 const chatController = {
   getChatMessages: (app: FastifyInstance) => {
