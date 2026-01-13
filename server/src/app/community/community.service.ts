@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { DomainError, NotFoundError } from '@/lib/errors';
 import { isValidObjectId } from '@/utils/object-id';
 import type { UserDTO } from '../user/user.schema';
+import { userStatusManager } from '../websockets/user.websocket';
 import { Community, CommunityMember } from './community.model';
 import type {
   CommunitiesQueryDTO,
@@ -84,7 +85,7 @@ export class CommunityService {
       throw new NotFoundError('Community not found');
     }
 
-    const members = CommunityMember.aggregate<CommunityMemberDTO>([
+    const members = await CommunityMember.aggregate<CommunityMemberDTO>([
       {
         $match: { communityId: new mongoose.Types.ObjectId(communityId) },
       },
@@ -95,7 +96,13 @@ export class CommunityService {
       },
     ]);
 
-    return members;
+    return members.map((member) => ({
+      ...member,
+      user: {
+        ...member.user,
+        status: userStatusManager.getStatus(member.user._id.toString()),
+      },
+    }));
   }
 
   async create(communityDto: CreateCommunityDTO) {

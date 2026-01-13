@@ -3,7 +3,7 @@ import { authenticate, TOKEN_KEY } from '@/lib/auth';
 import type { Reply, Request } from '@/lib/http';
 import { MessageSchema } from '@/lib/schemas';
 import { settings } from '@/settings';
-import type { SaveUserDTO } from '../user/user.schema';
+import type { SaveUserDTO, UserDTO } from '../user/user.schema';
 import { SaveUserSchema, UserSchema } from '../user/user.schema';
 import { UserService } from '../user/user.service';
 import { type LoginDTO, LoginSchema, TokenSchema } from './auth.schema';
@@ -76,7 +76,12 @@ const authController = {
           },
         },
       },
-      async (_: Request, reply: Reply) => {
+      async (request: Request, reply: Reply) => {
+        const user = request.user as UserDTO;
+        const authService = new AuthService(app.jwt);
+
+        await authService.logout(user._id);
+
         reply.clearCookie(TOKEN_KEY);
         reply.send({ message: 'Signed out successfully' });
       },

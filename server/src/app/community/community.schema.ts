@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserBasicSchema } from '../user/user.schema';
+import { UserBasicSchema, UserStatusSchema } from '../user/user.schema';
 
 export const CommunityIdSchema = z.object({
   id: z.string(),
@@ -33,7 +33,9 @@ export type CreateCommunityDTO = z.infer<typeof CreateCommunitySchema>;
 export type CommunitiesQueryDTO = z.infer<typeof CommunitiesQuerySchema>;
 
 const CommunityMemberSchema = z.object({
-  user: UserBasicSchema,
+  user: UserBasicSchema.extend({
+    status: UserStatusSchema,
+  }),
   communityId: z.coerce.string(),
 });
 

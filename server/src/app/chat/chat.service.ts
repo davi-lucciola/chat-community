@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import type { CommunityDocument } from '../community/community.model';
 import type { UserDTO } from '../user/user.schema';
+import type { ChatConnections } from '../websockets/chat.websocket';
 import { ChatMessage } from './chat.model';
 import { ChatEventSchema, type ChatMessageDTO } from './chat.schema';
-import type { ChatConnections } from './chat.ws-manager';
 
 export class ChatService {
   constructor(
