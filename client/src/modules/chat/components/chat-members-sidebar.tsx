@@ -1,11 +1,9 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { UsersIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { UserAvatar } from '@/modules/user/components/user-avatar';
 import { useChat } from '../chat.context';
-import communityService from '../community.service';
 
 export function ChatMembersSidebar() {
   return (
@@ -25,12 +23,7 @@ export function ChatMembersSidebar() {
 }
 
 function ChatMembers() {
-  const { community } = useChat();
-
-  const { data: members } = useSuspenseQuery({
-    queryKey: ['community', community._id, 'members'],
-    queryFn: async () => communityService.getMembers(community._id),
-  });
+  const { members } = useChat();
 
   return (
     <ScrollArea className="h-full">
@@ -52,7 +45,7 @@ function ChatMembers() {
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-background/50 transition-colors cursor-pointer"
               >
                 <div className="relative">
-                  <UserAvatar user={user} />
+                  <UserAvatar name={user.name} imageUrl={user.imageUrl} />
                   <div className="absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full bg-green-500 border-2 border-card" />
                 </div>
                 <div className="flex-1 min-w-0">

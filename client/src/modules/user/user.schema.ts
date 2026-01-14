@@ -1,10 +1,10 @@
-export const UserStatus = {
+export const UserStatusEnum = {
   ONLINE: 'ONLINE',
   OFFLINE: 'OFFLINE',
   IDLE: 'IDLE',
 } as const;
 
-export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
+export type UserStatus = (typeof UserStatusEnum)[keyof typeof UserStatusEnum];
 
 export type UserDTO = {
   _id: string;
@@ -17,6 +17,5 @@ export type UserDTO = {
 export type UserBasicDTO = {
   _id: string;
   name: string;
-  status: UserStatus;
   imageUrl: string | null;
 };

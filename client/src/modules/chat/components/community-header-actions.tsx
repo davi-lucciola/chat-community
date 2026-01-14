@@ -7,8 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { LeaveCommunityDialog } from '../../community/components/leave-community-dialog';
 import { useChat } from '../chat.context';
-import { LeaveCommunityDialog } from './leave-community-dialog';
 
 export function CommunityHeaderActions() {
   const { community } = useChat();

@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { setUnauthorizedHandler } from '@/lib/api';
 import { useAuth } from '../auth/auth.context';
-import { type UserDTO, UserStatus, UserStatus as UserStatusConst } from './user.schema';
+import { type UserDTO, type UserStatus, UserStatusEnum } from './user.schema';
 import userStatusService from './user.service';
 
 const ACTIVITY_EVENTS = ['mousemove', 'click', 'keydown'] as const;
@@ -40,14 +40,14 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     }
 
     idleTimeoutRef.current = setTimeout(() => {
-      setCurrentStatus(UserStatus.IDLE);
+      setCurrentStatus(UserStatusEnum.IDLE);
     }, IDLE_TIMEOUT);
   }, [setCurrentStatus]);
 
   const userActivity = useCallback(
     (user: UserDTO) => {
-      if (user.status !== UserStatusConst.ONLINE) {
-        setCurrentStatus(UserStatusConst.ONLINE);
+      if (user.status !== UserStatusEnum.ONLINE) {
+        setCurrentStatus(UserStatusEnum.ONLINE);
       }
 
       resetIdleTimeout();
@@ -68,7 +68,7 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     });
 
     socket.addEventListener('close', () => {
-      setCurrentStatus(UserStatusConst.OFFLINE);
+      setCurrentStatus(UserStatusEnum.OFFLINE);
     });
 
     for (const event of ACTIVITY_EVENTS) {
@@ -92,16 +92,13 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const handler = (message: string) => {
       unauthorizedHandler(message);
-      setCurrentStatus(UserStatusConst.OFFLINE);
+      setCurrentStatus(UserStatusEnum.OFFLINE);
     };
 
-    if (user) {
-      setUnauthorizedHandler(handler);
-    }
-
+    setUnauthorizedHandler(handler);
     queryClient.refetchQueries({ queryKey: ['user'] });
     return () => setUnauthorizedHandler(undefined);
-  }, [user, queryClient, unauthorizedHandler, setCurrentStatus]);
+  }, [queryClient, unauthorizedHandler, setCurrentStatus]);
 
   return <UserContext.Provider value={{}}>{children}</UserContext.Provider>;
 }

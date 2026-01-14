@@ -4,7 +4,7 @@ import { NavigationHeader } from '@/components/navigation';
 import {
   CommunityHeader,
   CommunityHeaderSkeleton,
-} from '@/modules/community/components/community-header';
+} from '@/modules/chat/components/community-header';
 import { ChatContextProvider } from '../chat.context';
 import {
   ChatMembersSidebar,

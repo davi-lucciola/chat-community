@@ -33,7 +33,7 @@ export function UserProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-0">
-        <UserAvatar user={user} />
+        <UserAvatar name={user.name} status={user.status} imageUrl={user.imageUrl} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>

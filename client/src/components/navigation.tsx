@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import { twMerge } from 'tailwind-merge';
-import { Button } from '@/components/ui/button';
 import { UserProfileDropdown } from '@/modules/user/components/user-profile-dropdown';
 import { ChatCommunityLogo } from './logo';
 import { ThemeToogle } from './theme/theme-toggle';
@@ -18,15 +17,15 @@ export function NavigationHeader({ className, ...props }: NavigationHeaderProps)
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/communities" className="flex items-center gap-2">
             <ChatCommunityLogo />
           </Link>
           <div className="flex items-center gap-4">
-            <Link to="/communities">
+            {/* <Link to="/">
               <Button variant="ghost" className="hover:cursor-pointer">
                 Home
               </Button>
-            </Link>
+            </Link> */}
             <ThemeToogle />
             <UserProfileDropdown />
           </div>

@@ -9,14 +9,16 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 import { toastStyles } from '@/components/ui/sonner';
+import type { CommunityDTO, CommunityMemberDTO } from '../community/community.schema';
+import communityService from '../community/community.service';
 import { type ChatMessageDTO, messageEventSchema } from './chat.schema';
 import chatService from './chat.service';
-import type { CommunityDTO } from './community.schema';
-import communityService from './community.service';
 
 type IChatContext = {
   community: CommunityDTO;
-  handleSendMessage: (message: string) => void;
+  messages: ChatMessageDTO[];
+  members: CommunityMemberDTO[];
+  sendMessage: (message: string) => void;
 };
 
 const ChatContext = createContext({} as IChatContext);
@@ -37,7 +39,17 @@ export function ChatContextProvider({
     queryFn: () => communityService.getCommunityById(communityId),
   });
 
-  const handleSendMessage = useCallback((message: string) => {
+  const { data: messages } = useSuspenseQuery({
+    queryKey: ['community', community._id, 'messages'],
+    queryFn: () => chatService.getMessages(community._id),
+  });
+
+  const { data: members } = useSuspenseQuery({
+    queryKey: ['community', community._id, 'members'],
+    queryFn: async () => communityService.getMembers(community._id),
+  });
+
+  const sendMessage = useCallback((message: string) => {
     if (!chatSocketRef.current || chatSocketRef.current.readyState !== WebSocket.OPEN) {
       return;
     }
@@ -45,7 +57,7 @@ export function ChatContextProvider({
     chatSocketRef.current.send(JSON.stringify({ message }));
   }, []);
 
-  const handleReciveMessage = useCallback(
+  const reciveMessage = useCallback(
     (payload: ChatMessageDTO) => {
       queryClient.setQueryData(
         ['community', community._id, 'messages'],
@@ -66,17 +78,17 @@ export function ChatContextProvider({
         return toast.error(data.payload.message, toastStyles.error);
       }
 
-      if (data.event === 'message') handleReciveMessage(data.payload);
+      if (data.event === 'message') reciveMessage(data.payload);
     });
 
     return () => {
       chatSocket.close();
       chatSocketRef.current = null;
     };
-  }, [community, handleReciveMessage]);
+  }, [community, reciveMessage]);
 
   return (
-    <ChatContext.Provider value={{ community, handleSendMessage }}>
+    <ChatContext.Provider value={{ community, messages, members, sendMessage }}>
       {children}
     </ChatContext.Provider>
   );
