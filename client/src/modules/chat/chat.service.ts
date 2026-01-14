@@ -2,7 +2,7 @@ import { api } from '@/lib/api';
 import type { ChatMessageDTO } from './chat.schema';
 
 function connect(communityId: string) {
-  const url = api.getUri().replace('http', 'ws');
+  const url = api.getUri().replace('https', 'ws').replace('http', 'ws');
   const params = new URLSearchParams({ communityId });
 
   const socket = new WebSocket(`${url}/chat/connect?${params.toString()}`);

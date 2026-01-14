@@ -1,15 +1,32 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import type { UserBasicDTO, UserDTO } from '../user.schema';
+import { type UserStatus, UserStatusEnum } from '../user.schema';
 
 type UserAvatarProps = {
-  user: UserDTO | UserBasicDTO;
+  name: string;
+  status?: UserStatus;
+  imageUrl: string | null;
 };
 
-export function UserAvatar({ user }: UserAvatarProps) {
+const statusColors: Record<UserStatus, string | null> = {
+  [UserStatusEnum.ONLINE]: 'bg-green-500',
+  [UserStatusEnum.IDLE]: 'bg-yellow-500',
+  [UserStatusEnum.OFFLINE]: null,
+};
+
+export function UserAvatar({ name, status, imageUrl }: UserAvatarProps) {
+  const statusColor = status ? statusColors[status] : null;
+
   return (
-    <Avatar className="size-10">
-      <AvatarImage src={user.imageUrl ?? ''} />
-      <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
-    </Avatar>
+    <div className="relative">
+      <Avatar className="size-10">
+        <AvatarImage src={imageUrl ?? ''} />
+        <AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
+      </Avatar>
+      {statusColor && (
+        <span
+          className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-background ${statusColor}`}
+        />
+      )}
+    </div>
   );
 }
