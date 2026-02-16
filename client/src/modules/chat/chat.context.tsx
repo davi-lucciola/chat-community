@@ -74,11 +74,11 @@ export function ChatContextProvider({
     chatSocket.addEventListener('message', (message) => {
       const data = eventSchema.parse(JSON.parse(message.data));
 
-      if (data.event === 'message') {
-        if (data.error) {
-          return toast.error(data.payload.message, toastStyles.error);
-        }
+      if (data.event === 'error') {
+        return toast.error(data.payload.message, toastStyles.error);
+      }
 
+      if (data.event === 'message') {
         return reciveMessage(data.payload);
       }
     });

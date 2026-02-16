@@ -29,19 +29,23 @@ export const sendMessageSchema = z.object({
   message: z.string(),
 });
 
+export const errorEventSchema = z.object({
+  event: z.literal('error'),
+  payload: z.object({ message: z.string() })
+})
+
 export const messageEventSchema = z.object({
   event: z.literal('message'),
   payload: chatMessageSchema,
-  error: z.boolean(),
 });
 
 export const statusChangeEventSchema = z.object({
   event: z.literal('status_change'),
   payload: statusChangeSchema,
-  error: z.literal(false),
 });
 
 export const eventSchema = z.discriminatedUnion('event', [
+  errorEventSchema,
   messageEventSchema,
   statusChangeEventSchema,
 ]);
