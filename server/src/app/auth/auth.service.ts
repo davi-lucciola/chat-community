@@ -6,6 +6,7 @@ import hash from '@/utils/hash';
 import { UserStatus } from '../user/enums/user-status';
 import type { UserDTO } from '../user/user.schema';
 import { userStatusManager } from '../websockets/user.websocket';
+
 import type { LoginDTO, TokenDTO } from './auth.schema';
 
 export class AuthService {
@@ -28,7 +29,7 @@ export class AuthService {
       throw new UnauthorizedError('Invalid email or password.');
     }
 
-    const userDto: UserDTO = {
+    const userDto: Omit<UserDTO, 'status'> = {
       _id: user._id.toString(),
       name: user.name,
       email: user.email,
@@ -39,7 +40,7 @@ export class AuthService {
       expiresIn: 60 * 60 * 5, // 5 Hours
     });
 
-    await userStatusManager.setStatus(user, UserStatus.ONLINE);
+    userStatusManager.setStatus(user._id.toString(), UserStatus.ONLINE);
 
     return {
       type: 'Bearer',
@@ -56,6 +57,6 @@ export class AuthService {
       throw new UnauthorizedError('Invalid email or password.');
     }
 
-    await userStatusManager.setStatus(user, UserStatus.OFFLINE);
+    userStatusManager.setStatus(user._id.toString(), UserStatus.OFFLINE);
   }
 }

@@ -30,8 +30,9 @@ const userController = {
         const { _id: userId } = request.user as UserDTO;
 
         const user = await userService.findById(userId);
+        const status = userStatusManager.getStatus(userId);
 
-        reply.send(user);
+        reply.send({ ...user.toObject(), status });
       },
     );
   },
@@ -89,7 +90,7 @@ const userController = {
         socket.on('message', async (message) => {
           await websocketErrorHandler(socket, async () => {
             const data = UserStatusUpdateSchema.parse(JSON.parse(message.toString()));
-            await userStatusManager.setStatus(user, data.status);
+            userStatusManager.setStatus(userId, data.status);
           });
         });
 
