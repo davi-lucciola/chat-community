@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { basicUserDocument } from '../user/user.model';
 
 const communityDocument = new mongoose.Schema({
   title: {
@@ -32,8 +31,8 @@ export const Community = mongoose.model('Community', communityDocument);
 export type CommunityDocument = InstanceType<typeof Community>;
 
 const communityMemberDocument = new mongoose.Schema({
-  user: {
-    type: basicUserDocument,
+  userId: {
+    type: mongoose.Types.ObjectId,
     required: true,
   },
   communityId: {

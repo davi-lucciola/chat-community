@@ -7,7 +7,7 @@ import {
 } from '../user/enums/user-status';
 import type { UserDocument } from '../user/user.model';
 import { chatConnectionManager } from './chat.websocket';
-import { EventDTO } from './events.schema';
+import type { EventDTO } from './events.schema';
 
 type UserStatusEntry = {
   status: UserStatus;
@@ -53,8 +53,7 @@ class UserStatusManager {
 
   private async broadcastToChats(userId: string, status: UserStatus): Promise<void> {
     const memberships = await CommunityMember.find({
-      'user._id': new mongoose.Types.ObjectId(userId),
-      communityId: new mongoose.Types.ObjectId('694e40f234be40594400cf2d'),
+      userId: new mongoose.Types.ObjectId(userId),
     });
 
     const event: EventDTO = {

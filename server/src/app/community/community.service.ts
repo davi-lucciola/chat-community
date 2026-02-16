@@ -24,9 +24,7 @@ export class CommunityService {
           pipeline: [
             {
               $match: {
-                $and: [
-                  { 'user._id': new mongoose.Types.ObjectId(this.currentUser._id) },
-                ],
+                $and: [{ userId: new mongoose.Types.ObjectId(this.currentUser._id) }],
               },
             },
             { $limit: 1 },
@@ -90,6 +88,21 @@ export class CommunityService {
         $match: { communityId: new mongoose.Types.ObjectId(communityId) },
       },
       {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      { $unwind: '$user' },
+      {
+        $project: {
+          user: { _id: 1, name: 1, imageUrl: 1 },
+          communityId: 1,
+        },
+      },
+      {
         $sort: {
           _id: 1,
         },
@@ -116,20 +129,16 @@ export class CommunityService {
       throw new DomainError('Already exists a community with this title');
     }
 
-    const user = {
-      _id: new mongoose.Types.ObjectId(this.currentUser._id),
-      name: this.currentUser.name,
-      imageUrl: this.currentUser.imageUrl,
-    };
+    const userId = new mongoose.Types.ObjectId(this.currentUser._id);
 
     const community = await Community.create({
       title,
       description,
-      userId: user._id,
+      userId,
     });
 
     await CommunityMember.create({
-      user,
+      userId,
       communityId: community._id,
     });
 
@@ -149,20 +158,16 @@ export class CommunityService {
       throw new NotFoundError('Community not found');
     }
 
-    const user = {
-      _id: new mongoose.Types.ObjectId(this.currentUser._id),
-      name: this.currentUser.name,
-      imageUrl: this.currentUser.imageUrl,
-    };
+    const userId = new mongoose.Types.ObjectId(this.currentUser._id);
 
     const isCommunityMember = await CommunityMember.findOne({
       communityId: community._id,
-      'user._id': user._id,
+      userId,
     });
 
     if (!isCommunityMember) {
       await CommunityMember.create({
-        user,
+        userId,
         communityId: community._id,
       });
 
@@ -194,13 +199,13 @@ export class CommunityService {
 
     const isCommunityMember = await CommunityMember.findOne({
       communityId: community._id,
-      'user._id': userId,
+      userId,
     });
 
     if (isCommunityMember) {
       await CommunityMember.deleteOne({
-        communityId: community.id,
-        'user._id': userId,
+        communityId: community._id,
+        userId,
       });
 
       community.totalMembers -= 1;
