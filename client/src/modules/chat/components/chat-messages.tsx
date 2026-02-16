@@ -86,7 +86,6 @@ function MessageInput() {
                 variant="ghost"
                 size="icon"
                 className="size-8"
-                onClick={handleOnClick}
               >
                 <Paperclip className="size-4" />
               </Button>
@@ -94,9 +93,9 @@ function MessageInput() {
           </div>
         </div>
         <Button
-          // onClick={sendMessage}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 size-11 shrink-0"
           size="icon"
+          onClick={handleOnClick}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 size-11 shrink-0"
         >
           <Send className="size-5" />
         </Button>

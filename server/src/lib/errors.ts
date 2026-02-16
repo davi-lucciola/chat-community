@@ -46,7 +46,7 @@ export const websocketErrorHandler = async <T>(
   try {
     return await callback();
   } catch (error) {
-    const data = { message: '', error: true };
+    const data = { message: '' };
 
     console.error(error);
 
@@ -55,7 +55,7 @@ export const websocketErrorHandler = async <T>(
         ? error.message
         : 'Sorry, a unexpected error occurred.';
 
-    socket.send(JSON.stringify(data));
+    socket.send(JSON.stringify({ event: 'error', payload: data }));
     socket.close();
   }
 };
