@@ -5,7 +5,6 @@ import {
   type UserStatus,
   UserStatus as UserStatusConst,
 } from '../user/enums/user-status';
-import type { UserDocument } from '../user/user.model';
 import { chatConnectionManager } from './chat.websocket';
 import type { EventDTO } from './events.schema';
 
@@ -38,17 +37,14 @@ class UserStatusManager {
     return this.users.get(userId)?.status ?? UserStatusConst.OFFLINE;
   }
 
-  async setStatus(user: UserDocument, status: UserStatus) {
-    const entry = this.users.get(user._id.toString());
-
-    user.status = status;
-    await user.save();
+  setStatus(userId: string, status: UserStatus) {
+    const entry = this.users.get(userId);
 
     if (!entry) return;
     if (entry.status === status) return;
 
     entry.status = status;
-    this.broadcastToChats(user._id.toString(), status);
+    this.broadcastToChats(userId, status);
   }
 
   private async broadcastToChats(userId: string, status: UserStatus): Promise<void> {
