@@ -20,14 +20,32 @@ export const chatMessageSchema = z.object({
   createdAt: z.string(),
 });
 
+export const statusChangeSchema = z.object({
+  userId: z.string(),
+  status: z.enum(['ONLINE', 'OFFLINE', 'IDLE'])
+})
+
 export const sendMessageSchema = z.object({
   message: z.string(),
 });
 
 export const messageEventSchema = z.object({
-  event: z.enum(['message']),
+  event: z.literal('message'),
   payload: chatMessageSchema,
   error: z.boolean(),
 });
 
+export const statusChangeEventSchema = z.object({
+  event: z.literal('status_change'),
+  payload: statusChangeSchema,
+  error: z.literal(false),
+});
+
+export const eventSchema = z.discriminatedUnion('event', [
+  messageEventSchema,
+  statusChangeEventSchema,
+]);
+
 export type MessageEventDTO = z.infer<typeof messageEventSchema>;
+export type StatusChangeEventDTO = z.infer<typeof statusChangeEventSchema>;
+export type EventDTO = z.infer<typeof eventSchema>;

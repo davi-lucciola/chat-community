@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { toastStyles } from '@/components/ui/sonner';
 import type { CommunityDTO, CommunityMemberDTO } from '../community/community.schema';
 import communityService from '../community/community.service';
-import { type ChatMessageDTO, messageEventSchema } from './chat.schema';
+import { type ChatMessageDTO, eventSchema } from './chat.schema';
 import chatService from './chat.service';
 
 type IChatContext = {
@@ -72,13 +72,15 @@ export function ChatContextProvider({
     chatSocketRef.current = chatSocket;
 
     chatSocket.addEventListener('message', (message) => {
-      const data = messageEventSchema.parse(JSON.parse(message.data));
+      const data = eventSchema.parse(JSON.parse(message.data));
 
-      if (data.error) {
-        return toast.error(data.payload.message, toastStyles.error);
+      if (data.event === 'message') {
+        if (data.error) {
+          return toast.error(data.payload.message, toastStyles.error);
+        }
+
+        return reciveMessage(data.payload);
       }
-
-      if (data.event === 'message') reciveMessage(data.payload);
     });
 
     return () => {
