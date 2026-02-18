@@ -20,10 +20,13 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   const queryClient = useQueryClient();
 
   const { user, unauthorizedHandler } = useAuth();
+  const userRef = useRef<UserDTO | undefined>(user);
+
+  userRef.current = user;
 
   const socketRef = useRef<WebSocket | null>(null);
   const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  
   const setCurrentStatus = useCallback(
     (status: UserStatus) => {
       if (socketRef.current?.readyState === WebSocket.OPEN) {
@@ -56,14 +59,17 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   );
 
   useEffect(() => {
-    if (!user) return;
-    const handleActivity = () => userActivity(user);
+    if (!user?._id) return
+    
+    const handleActivity = () => {
+      if (userRef.current) userActivity(userRef.current);
+    };
 
     const socket = userStatusService.connect();
     socketRef.current = socket;
 
     socket.addEventListener('open', () => {
-      setCurrentStatus(user.status);
+      setCurrentStatus(UserStatusEnum.ONLINE);
       resetIdleTimeout();
     });
 
@@ -87,7 +93,7 @@ export function UserContextProvider({ children }: PropsWithChildren) {
       socket.close();
       socketRef.current = null;
     };
-  }, [user, resetIdleTimeout, setCurrentStatus, userActivity]);
+  }, [user?._id, resetIdleTimeout, setCurrentStatus, userActivity]);
 
   useEffect(() => {
     const handler = (message: string) => {

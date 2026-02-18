@@ -11,7 +11,12 @@ import { toast } from 'sonner';
 import { toastStyles } from '@/components/ui/sonner';
 import type { CommunityDTO, CommunityMemberDTO } from '../community/community.schema';
 import communityService from '../community/community.service';
-import { type ChatMessageDTO, eventSchema } from './chat.schema';
+import {
+  type ChatMessageDTO,
+  eventSchema,
+  type MessageEventDTO,
+  type StatusChangeEventDTO,
+} from './chat.schema';
 import chatService from './chat.service';
 
 type IChatContext = {
@@ -58,10 +63,25 @@ export function ChatContextProvider({
   }, []);
 
   const reciveMessage = useCallback(
-    (payload: ChatMessageDTO) => {
+    ({ payload }: MessageEventDTO) => {
       queryClient.setQueryData(
         ['community', community._id, 'messages'],
         (old: ChatMessageDTO[] = []) => [payload, ...old],
+      );
+    },
+    [community, queryClient],
+  );
+
+  const reciveStatusChange = useCallback(
+    ({ payload }: StatusChangeEventDTO) => {
+      queryClient.setQueryData(
+        ['community', community._id, 'members'],
+        (old: CommunityMemberDTO[]) =>
+          old.map((member) =>
+            member.user._id !== payload.userId
+              ? member
+              : { ...member, user: { ...member.user, status: payload.status } },
+          ),
       );
     },
     [community, queryClient],
@@ -71,6 +91,12 @@ export function ChatContextProvider({
     const chatSocket = chatService.connect(community._id);
     chatSocketRef.current = chatSocket;
 
+    chatSocket.addEventListener('open', () => {
+      queryClient.invalidateQueries({
+        queryKey: ['community', community._id, 'members'],
+      });
+    });
+
     chatSocket.addEventListener('message', (message) => {
       const data = eventSchema.parse(JSON.parse(message.data));
 
@@ -79,7 +105,11 @@ export function ChatContextProvider({
       }
 
       if (data.event === 'message') {
-        return reciveMessage(data.payload);
+        return reciveMessage(data);
+      }
+
+      if (data.event === 'status_change') {
+        return reciveStatusChange(data);
       }
     });
 
@@ -87,7 +117,7 @@ export function ChatContextProvider({
       chatSocket.close();
       chatSocketRef.current = null;
     };
-  }, [community, reciveMessage]);
+  }, [community, queryClient, reciveMessage, reciveStatusChange]);
 
   return (
     <ChatContext.Provider value={{ community, messages, members, sendMessage }}>

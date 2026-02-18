@@ -82,11 +82,7 @@ function MessageInput() {
               <Button variant="ghost" size="icon" className="size-8">
                 <Smile className="size-4" />
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-              >
+              <Button variant="ghost" size="icon" className="size-8">
                 <Paperclip className="size-4" />
               </Button>
             </div>
