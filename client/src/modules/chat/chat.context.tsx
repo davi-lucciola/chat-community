@@ -74,25 +74,14 @@ export function ChatContextProvider({
 
   const reciveStatusChange = useCallback(
     ({ payload }: StatusChangeEventDTO) => {
-      console.log(payload);
       queryClient.setQueryData(
         ['community', community._id, 'members'],
-        (old: CommunityMemberDTO[]) => {
-          const member = old.find(({ user }) => user._id === payload.userId);
-
-          if (!member) return old;
-
-          return [
-            ...old.filter(({ user }) => user._id !== payload.userId),
-            {
-              ...member,
-              user: {
-                ...member.user,
-                status: payload.status,
-              },
-            },
-          ];
-        },
+        (old: CommunityMemberDTO[]) =>
+          old.map((member) =>
+            member.user._id !== payload.userId
+              ? member
+              : { ...member, user: { ...member.user, status: payload.status } },
+          ),
       );
     },
     [community, queryClient],
@@ -101,6 +90,12 @@ export function ChatContextProvider({
   useEffect(() => {
     const chatSocket = chatService.connect(community._id);
     chatSocketRef.current = chatSocket;
+
+    chatSocket.addEventListener('open', () => {
+      queryClient.invalidateQueries({
+        queryKey: ['community', community._id, 'members'],
+      });
+    });
 
     chatSocket.addEventListener('message', (message) => {
       const data = eventSchema.parse(JSON.parse(message.data));
@@ -122,7 +117,7 @@ export function ChatContextProvider({
       chatSocket.close();
       chatSocketRef.current = null;
     };
-  }, [community, reciveMessage, reciveStatusChange]);
+  }, [community, queryClient, reciveMessage, reciveStatusChange]);
 
   return (
     <ChatContext.Provider value={{ community, messages, members, sendMessage }}>
