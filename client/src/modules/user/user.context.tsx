@@ -12,7 +12,8 @@ import { type UserDTO, type UserStatus, UserStatusEnum } from './user.schema';
 import userStatusService from './user.service';
 
 const ACTIVITY_EVENTS = ['mousemove', 'click', 'keydown'] as const;
-const IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+// const IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+const IDLE_TIMEOUT = 5 * 1000; // 10 minutes
 
 const UserContext = createContext({});
 

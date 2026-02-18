@@ -7,14 +7,8 @@ type UserAvatarProps = {
   imageUrl: string | null;
 };
 
-const statusColors: Record<UserStatus, string | null> = {
-  [UserStatusEnum.ONLINE]: 'bg-green-500',
-  [UserStatusEnum.IDLE]: 'bg-yellow-500',
-  [UserStatusEnum.OFFLINE]: null,
-};
-
 export function UserAvatar({ name, status, imageUrl }: UserAvatarProps) {
-  const statusColor = status ? statusColors[status] : null;
+  const isOffline = status === UserStatusEnum.OFFLINE;
 
   return (
     <div className="relative">
@@ -22,9 +16,9 @@ export function UserAvatar({ name, status, imageUrl }: UserAvatarProps) {
         <AvatarImage src={imageUrl ?? ''} />
         <AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
       </Avatar>
-      {statusColor && (
+      {!isOffline && (
         <span
-          className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-background ${statusColor}`}
+          className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-background ${status === 'ONLINE' ? 'bg-green-500' : 'bg-yellow-500'}`}
         />
       )}
     </div>

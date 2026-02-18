@@ -22,8 +22,8 @@ export const chatMessageSchema = z.object({
 
 export const statusChangeSchema = z.object({
   userId: z.string(),
-  status: z.enum(['ONLINE', 'OFFLINE', 'IDLE'])
-})
+  status: z.enum(['ONLINE', 'OFFLINE', 'IDLE']),
+});
 
 export const sendMessageSchema = z.object({
   message: z.string(),
@@ -31,8 +31,8 @@ export const sendMessageSchema = z.object({
 
 export const errorEventSchema = z.object({
   event: z.literal('error'),
-  payload: z.object({ message: z.string() })
-})
+  payload: z.object({ message: z.string() }),
+});
 
 export const messageEventSchema = z.object({
   event: z.literal('message'),
