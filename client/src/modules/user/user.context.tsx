@@ -26,7 +26,7 @@ export function UserContextProvider({ children }: PropsWithChildren) {
 
   const socketRef = useRef<WebSocket | null>(null);
   const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+
   const setCurrentStatus = useCallback(
     (status: UserStatus) => {
       if (socketRef.current?.readyState === WebSocket.OPEN) {
@@ -58,9 +58,10 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     [resetIdleTimeout, setCurrentStatus],
   );
 
+  // User Websocket (Status)
   useEffect(() => {
-    if (!user?._id) return
-    
+    if (!user?._id) return;
+
     const handleActivity = () => {
       if (userRef.current) userActivity(userRef.current);
     };
@@ -95,6 +96,7 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     };
   }, [user?._id, resetIdleTimeout, setCurrentStatus, userActivity]);
 
+  // Unauthorized Handler
   useEffect(() => {
     const handler = (message: string) => {
       unauthorizedHandler(message);
@@ -102,9 +104,8 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     };
 
     setUnauthorizedHandler(handler);
-    queryClient.refetchQueries({ queryKey: ['user'] });
     return () => setUnauthorizedHandler(undefined);
-  }, [queryClient, unauthorizedHandler, setCurrentStatus]);
+  }, [unauthorizedHandler, setCurrentStatus]);
 
   return <UserContext.Provider value={{}}>{children}</UserContext.Provider>;
 }
