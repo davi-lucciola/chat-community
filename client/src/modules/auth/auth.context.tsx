@@ -1,6 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { createContext, type PropsWithChildren, useCallback, useContext } from 'react';
+import {
+  createContext,
+  type PropsWithChildren,
+  useCallback,
+  useContext,
+  useRef,
+} from 'react';
 import { toast } from 'sonner';
 import { toastStyles } from '@/components/ui/sonner';
 import type { UserDTO } from '@/modules/user/user.schema';
@@ -10,6 +16,7 @@ export type IAuthContext = {
   user?: UserDTO;
   isFechingUser: boolean;
   unauthorizedHandler: (message: string) => void;
+  resetUnauthorizedState: () => void;
 };
 
 const AuthContext = createContext({} as IAuthContext);
@@ -29,14 +36,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
     retry: false,
   });
 
+  const isHandlingUnauthorized = useRef(false);
+
   const unauthorizedHandler = useCallback(
     (message: string) => {
+      if (isHandlingUnauthorized.current) return;
+
+      isHandlingUnauthorized.current = true;
       queryClient.setQueryData(['user'], undefined);
+
       navigate({ to: '/sign-in' });
       toast.error(message, toastStyles.error);
     },
     [queryClient, navigate],
   );
+
+  const resetUnauthorizedState = useCallback(() => {
+    isHandlingUnauthorized.current = false;
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -44,6 +61,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         user,
         isFechingUser,
         unauthorizedHandler,
+        resetUnauthorizedState,
       }}
     >
       {children}
