@@ -7,6 +7,7 @@ services:
       - 3333:3333
     environment:
       IS_PROD: true
+      CLIENT_URL: http://localhost:3333
       JWT_SECRET: supersecretkey
       MONGODB_URL: mongodb://db:27017/chat-community
 

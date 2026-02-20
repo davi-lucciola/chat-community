@@ -45,4 +45,4 @@ COPY --from=fastify-builder /chat-community/dist ./
 
 EXPOSE 3333
 
-ENTRYPOINT [ "node", "server.js" ]
+ENTRYPOINT [ "node", "main.js" ]
