@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch --env-file=.env ./src/server.ts",
-    "start": "node --env-file=.env ./dist/server.js",
+    "dev": "tsx watch --env-file=.env ./src/main.ts",
+    "start": "node --env-file=.env ./dist/main.js",
     "build": "tsc && tsc-alias",
     "format": "biome check --write"
   },
