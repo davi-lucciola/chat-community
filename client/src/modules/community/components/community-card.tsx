@@ -56,7 +56,9 @@ export function CommunityCard({ community }: CommunityCardProps) {
         </div>
       </div>
       <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-        {community.description != null ? community.description : '<No description>'}
+        {community.description ?? (
+          <span className="italic opacity-50">No description provided.</span>
+        )}
       </p>
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <div className="flex items-center gap-1">

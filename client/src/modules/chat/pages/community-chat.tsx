@@ -32,18 +32,10 @@ function CommunityChat() {
   return (
     <div className="container m-auto flex-1 flex overflow-hidden min-h-0">
       <div className="flex-1 flex flex-col min-h-0">
-        <Suspense fallback={<CommunityHeaderSkeleton />}>
-          <CommunityHeader />
-        </Suspense>
-
-        <Suspense fallback={<ChatMessagesSkeleton />}>
-          <ChatMessages />
-        </Suspense>
+        <CommunityHeader />
+        <ChatMessages />
       </div>
-
-      <Suspense fallback={<ChatMembersSidebarSkeleton />}>
-        <ChatMembersSidebar />
-      </Suspense>
+      <ChatMembersSidebar />
     </div>
   );
 }
