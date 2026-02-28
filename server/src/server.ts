@@ -29,4 +29,3 @@ export const createApp = async () => {
 
   return app;
 };
-

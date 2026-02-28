@@ -3,7 +3,7 @@ import { authenticate } from '@/lib/auth';
 import { websocketErrorHandler } from '@/lib/errors';
 import type { Reply, Request } from '@/lib/http';
 import { MessageSchema } from '@/lib/schemas';
-import { userStatusManager } from '../websockets/user.websocket';
+import { userConnectionManager } from '../websockets/user.websocket';
 import type { UserDocument } from './user.model';
 import type { SaveUserDTO, UserDTO } from './user.schema';
 import { SaveUserSchema, UserSchema, UserStatusUpdateSchema } from './user.schema';
@@ -30,7 +30,7 @@ const userController = {
         const { _id: userId } = request.user as UserDTO;
 
         const user = await userService.findById(userId);
-        const status = userStatusManager.getStatus(userId);
+        const status = userConnectionManager.getStatus(userId);
 
         reply.send({ ...user.toObject(), status });
       },
@@ -63,7 +63,7 @@ const userController = {
       },
     );
   },
-  userNotificationConnection: (app: FastifyInstance) => {
+  userConnection: (app: FastifyInstance) => {
     app.addHook('preHandler', authenticate);
 
     app.get(
@@ -85,17 +85,17 @@ const userController = {
 
         if (!user) return;
 
-        userStatusManager.connect(userId, socket);
+        userConnectionManager.connect(userId, socket);
 
         socket.on('message', async (message) => {
           await websocketErrorHandler(socket, async () => {
             const data = UserStatusUpdateSchema.parse(JSON.parse(message.toString()));
-            userStatusManager.setStatus(userId, data.status);
+            userConnectionManager.setStatus(userId, data.status);
           });
         });
 
         socket.on('close', () => {
-          userStatusManager.disconnect(userId);
+          userConnectionManager.disconnect(userId);
         });
       },
     );

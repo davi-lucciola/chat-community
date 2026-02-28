@@ -13,7 +13,7 @@ type UserStatusEntry = {
   socket: ws.WebSocket;
 };
 
-class UserStatusManager {
+class UserConnectionManager {
   private users: Map<string, UserStatusEntry> = new Map();
 
   connect(userId: string, socket: ws.WebSocket): void {
@@ -71,4 +71,4 @@ class UserStatusManager {
   }
 }
 
-export const userStatusManager = new UserStatusManager();
+export const userConnectionManager = new UserConnectionManager();

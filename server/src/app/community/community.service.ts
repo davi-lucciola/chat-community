@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { DomainError, NotFoundError } from '@/lib/errors';
 import { isValidObjectId } from '@/utils/object-id';
 import type { UserDTO } from '../user/user.schema';
-import { userStatusManager } from '../websockets/user.websocket';
+import { userConnectionManager } from '../websockets/user.websocket';
 import { Community, CommunityMember } from './community.model';
 import type {
   CommunitiesQueryDTO,
@@ -113,7 +113,7 @@ export class CommunityService {
       ...member,
       user: {
         ...member.user,
-        status: userStatusManager.getStatus(member.user._id.toString()),
+        status: userConnectionManager.getStatus(member.user._id.toString()),
       },
     }));
   }
