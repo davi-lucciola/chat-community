@@ -20,8 +20,8 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   const queryClient = useQueryClient();
 
   const { user, unauthorizedHandler } = useAuth();
-  const userRef = useRef<UserDTO | undefined>(user);
 
+  const userRef = useRef<UserDTO | undefined>(user);
   userRef.current = user;
 
   const socketRef = useRef<WebSocket | null>(null);
