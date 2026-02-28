@@ -16,5 +16,5 @@
     "skipLibCheck": true,
     "moduleResolution": "node16"
   },
-  "include": ["src"]
+  "include": ["src", "tests"]
 }
