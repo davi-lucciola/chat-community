@@ -64,7 +64,7 @@ When running with Docker:
 
 **WebSocket Connection Managers** (`server/src/app/websockets/`):
 - `chat.websocket.ts` - `ChatsConnectionManager` class that manages WebSocket connections per community chat room (tracks connected users per community)
-- `user.websocket.ts` - `UserStatusManager` class that tracks user online/offline status and broadcasts status changes to relevant chat rooms
+- `user.websocket.ts` - `UserConnectionManager` class that tracks user online/offline status and broadcasts status changes to relevant chat rooms
 
 **Key patterns**:
 - **Type-safe validation**: Uses `fastify-type-provider-zod` with Zod schemas for automatic request/response validation

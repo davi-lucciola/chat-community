@@ -5,7 +5,7 @@ import { UnauthorizedError } from '@/lib/errors';
 import hash from '@/utils/hash';
 import { UserStatus } from '../user/enums/user-status';
 import type { UserDTO } from '../user/user.schema';
-import { userStatusManager } from '../websockets/user.websocket';
+import { userConnectionManager } from '../websockets/user.websocket';
 
 import type { LoginDTO, TokenDTO } from './auth.schema';
 
@@ -40,7 +40,7 @@ export class AuthService {
       expiresIn: 60 * 60 * 5, // 5 Hours
     });
 
-    userStatusManager.setStatus(user._id.toString(), UserStatus.ONLINE);
+    userConnectionManager.setStatus(user._id.toString(), UserStatus.ONLINE);
 
     return {
       type: 'Bearer',
@@ -57,6 +57,6 @@ export class AuthService {
       throw new UnauthorizedError('Invalid email or password.');
     }
 
-    userStatusManager.setStatus(user._id.toString(), UserStatus.OFFLINE);
+    userConnectionManager.setStatus(user._id.toString(), UserStatus.OFFLINE);
   }
 }

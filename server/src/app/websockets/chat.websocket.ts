@@ -1,9 +1,12 @@
 import type ws from 'ws';
 
-export type ChatConnections = Map<string, ws.WebSocket>;
+type UserId = string;
+type CommunityId = string;
+
+export type ChatConnections = Map<UserId, ws.WebSocket>;
 
 class ChatsConnectionManager {
-  chats: Map<string, ChatConnections>;
+  chats: Map<CommunityId, ChatConnections>;
 
   constructor() {
     this.chats = new Map();
