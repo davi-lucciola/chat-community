@@ -48,7 +48,7 @@ const authController = {
           description: 'Create a new user.',
           body: SaveUserSchema,
           response: {
-            200: UserSchema,
+            200: UserSchema.omit({ status: true }),
             400: MessageSchema,
           },
         },
