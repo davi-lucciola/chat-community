@@ -3,14 +3,14 @@ import { User } from '@/app/user/user.model';
 import hash from '@/utils/hash';
 import { createTestApp } from '../helpers/createTestApp';
 
-const TEST_USER = {
-  name: 'Test User',
-  email: 'test@example.com',
-  password: 'password123',
-};
-
 describe('POST /api/sign-in', () => {
   let app: FastifyInstance;
+
+  const TEST_USER = {
+    name: 'Test User',
+    email: 'test@example.com',
+    password: 'password123',
+  };
 
   beforeAll(async () => {
     app = await createTestApp();
@@ -113,13 +113,13 @@ describe('POST /api/sign-in', () => {
   });
 });
 
-const SIGN_UP_EMAILS = {
-  success: 'signup-test@example.com',
-  duplicate: 'signup-duplicate@example.com',
-};
-
 describe('POST /api/sign-up', () => {
   let app: FastifyInstance;
+
+  const SIGN_UP_EMAILS = {
+    success: 'signup-test@example.com',
+    duplicate: 'signup-duplicate@example.com',
+  };
 
   beforeAll(async () => {
     app = await createTestApp();
@@ -139,7 +139,11 @@ describe('POST /api/sign-up', () => {
       const response = await app.inject({
         method: 'POST',
         url: '/api/sign-up',
-        payload: { name: 'New User', email: SIGN_UP_EMAILS.success, password: 'pass1234' },
+        payload: {
+          name: 'New User',
+          email: SIGN_UP_EMAILS.success,
+          password: 'pass1234',
+        },
       });
 
       expect(response.statusCode).toBe(200);
@@ -164,17 +168,27 @@ describe('POST /api/sign-up', () => {
       await app.inject({
         method: 'POST',
         url: '/api/sign-up',
-        payload: { name: 'First User', email: SIGN_UP_EMAILS.duplicate, password: 'pass1234' },
+        payload: {
+          name: 'First User',
+          email: SIGN_UP_EMAILS.duplicate,
+          password: 'pass1234',
+        },
       });
 
       const response = await app.inject({
         method: 'POST',
         url: '/api/sign-up',
-        payload: { name: 'Second User', email: SIGN_UP_EMAILS.duplicate, password: 'pass1234' },
+        payload: {
+          name: 'Second User',
+          email: SIGN_UP_EMAILS.duplicate,
+          password: 'pass1234',
+        },
       });
 
       expect(response.statusCode).toBe(400);
-      expect(response.json()).toEqual({ message: 'Already exists a user with this email.' });
+      expect(response.json()).toEqual({
+        message: 'Already exists a user with this email.',
+      });
     });
   });
 
@@ -227,6 +241,93 @@ describe('POST /api/sign-up', () => {
       });
 
       expect(response.statusCode).toBe(400);
+    });
+  });
+});
+
+describe('DELETE /api/sign-out', () => {
+  let app: FastifyInstance;
+
+  const TEST_USER = {
+    name: 'Sign Out User',
+    email: 'signout@example.com',
+    password: 'password123',
+  };
+
+  beforeAll(async () => {
+    app = await createTestApp();
+    await User.create({
+      ...TEST_USER,
+      password: await hash.hashPassword(TEST_USER.password),
+    });
+  });
+
+  afterAll(async () => {
+    await User.deleteMany({ email: TEST_USER.email });
+    await app.close();
+  });
+
+  async function signIn() {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/sign-in',
+      payload: { email: TEST_USER.email, password: TEST_USER.password },
+    });
+    const setCookieHeader = response.headers['set-cookie'] as string;
+    return setCookieHeader.split(';')[0];
+  }
+
+  describe('when authenticated with a valid token', () => {
+    it('should return 200 with success message', async () => {
+      const cookie = await signIn();
+
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/api/sign-out',
+        headers: { cookie },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({ message: 'Signed out successfully' });
+    });
+
+    it('should clear the accessToken cookie', async () => {
+      const cookie = await signIn();
+
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/api/sign-out',
+        headers: { cookie },
+      });
+
+      const setCookieHeader = response.headers['set-cookie'] as string;
+      expect(setCookieHeader).toBeDefined();
+      expect(setCookieHeader).toContain('accessToken=;');
+    });
+  });
+
+  describe('when no cookie is provided', () => {
+    it('should return 401 with unauthenticated message', async () => {
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/api/sign-out',
+      });
+
+      expect(response.statusCode).toBe(401);
+      expect(response.json()).toEqual({ message: 'You must be authenticated.' });
+    });
+  });
+
+  describe('when token is invalid', () => {
+    it('should return 401 with invalid token message', async () => {
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/api/sign-out',
+        headers: { cookie: 'accessToken=invalidtoken' },
+      });
+
+      expect(response.statusCode).toBe(401);
+      expect(response.json()).toEqual({ message: 'Invalid token.' });
     });
   });
 });
