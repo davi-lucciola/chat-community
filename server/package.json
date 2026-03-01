@@ -8,7 +8,7 @@
     "start": "node --env-file=.env ./dist/main.js",
     "build": "tsc && tsc-alias",
     "format": "biome check --write",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand --verbose"
   },
   "keywords": [],
   "author": "",

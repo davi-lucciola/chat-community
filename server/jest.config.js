@@ -7,8 +7,7 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
     // @scalar/fastify-api-reference e pure ESM e incompativel com o modo CommonJS do Jest.
     // Substituimos por um mock que registra um plugin noop para nao quebrar o startup.
-    '^@scalar/fastify-api-reference$':
-      '<rootDir>/tests/mocks/scalar-api-reference.ts',
+    '^@scalar/fastify-api-reference$': '<rootDir>/tests/mocks/scalar-api-reference.ts',
   },
   transform: {
     '^.+\\.ts$': [
