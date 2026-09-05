@@ -59,9 +59,19 @@ chat-community
 
 ## 🪟 Demonstration
 
-> 🚧 **WIP**  
-> Demonstration media and usage examples will be added soon.
+### Landing Page and Auth
 
+### Landing Page and Auth
+
+![landing](https://github.com/user-attachments/assets/b36789ef-0d15-4b11-b508-22b73e946fb6)
+
+### Home Page and Communities
+
+![home](https://github.com/user-attachments/assets/392be45d-7b49-48ff-8346-65f1a3800359)
+
+### Chat between Users
+
+![chat](https://github.com/user-attachments/assets/e112369e-3e5c-4729-a5ea-25150eb7ee32)
 
 ## 🚀 Getting Started
 
